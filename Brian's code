@@ -1,2 +1,58 @@
 # Brian code
 
+scp -r root@10.19.139.129:/mnt/datasets/project_2/human_ibd/IBD_manifest.txt .
+scp -r root@10.19.139.129:/mnt/datasets/project_2/human_ibd/IBD_metadata.xlsx .
+
+scp -r root@10.19.139.129:/data/project_2/demux.qzv .
+scp -r root@10.19.139.129:/data/project_2/100-table.qzv .
+scp -r root@10.19.139.129:/data/project_2/100-rep-seqs.qzv .
+
+# converted metadata.xlsx to a .tsv file, transferred that to project_2 directory
+scp IBD_metadata.tsv root@10.19.139.129:/data/project_2
+
+ssh root@10.19.139.129 
+Biome884
+
+cd ~/data
+
+mkdir project_2
+cd project_2
+
+# importing sequences using manifest
+qiime tools import \
+  --type "SampleData[SequencesWithQuality]" \
+  --input-format SingleEndFastqManifestPhred33V2 \
+  --input-path /mnt/datasets/project_2/human_ibd/IBD_manifest.txt \
+  --output-path ./demux_seqs.qza
+
+# summarizing 
+qiime demux summarize \
+  --i-data demux_seqs.qza \
+  --o-visualization demux.qzv
+
+
+
+# denoising
+qiime dada2 denoise-single \
+  --i-demultiplexed-seqs demux_seqs.qza \
+  --p-trim-left 0 \
+  --p-trunc-len 100 \
+  --o-representative-sequences 100-rep-seqs.qza \
+  --o-table 100-table.qza \
+  --o-denoising-stats 100-stats.qza
+
+# Visualize DADA2 stats
+qiime metadata tabulate \
+  --m-input-file 100-stats.qza \
+  --o-visualization 100-stats.qzv
+
+
+# Visualize ASVs stats
+qiime feature-table summarize \
+  --i-table 100-table.qza \
+  --o-visualization 100-table.qzv \
+  --m-sample-metadata-file /data/project_2/IBD_metadata.tsv
+
+qiime feature-table tabulate-seqs \
+  --i-data 100-rep-seqs.qza \
+  --o-visualization 100-rep-seqs.qzv
