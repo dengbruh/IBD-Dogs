@@ -30,8 +30,6 @@ qiime demux summarize \
   --i-data demux_seqs.qza \
   --o-visualization demux.qzv
 
-
-
 # denoising
 qiime dada2 denoise-single \
   --i-demultiplexed-seqs demux_seqs.qza \
@@ -56,3 +54,33 @@ qiime feature-table summarize \
 qiime feature-table tabulate-seqs \
   --i-data 100-rep-seqs.qza \
   --o-visualization 100-rep-seqs.qzv
+
+
+## Generated new files using trunch-len 480
+tmux new -s Brian
+conda activate qiime2-2023.7
+
+# denoising
+qiime dada2 denoise-single \
+  --i-demultiplexed-seqs demux_seqs.qza \
+  --p-trim-left 0 \
+  --p-trunc-len 480 \
+  --o-representative-sequences 480-rep-seqs.qza \
+  --o-table 480-table.qza \
+  --o-denoising-stats 480-stats.qza
+
+# Visualize DADA2 stats
+qiime metadata tabulate \
+  --m-input-file 480-stats.qza \
+  --o-visualization 480-stats.qzv
+
+
+# Visualize ASVs stats
+qiime feature-table summarize \
+  --i-table 480-table.qza \
+  --o-visualization 480-table.qzv \
+  --m-sample-metadata-file /data/project_2/IBD_metadata.tsv
+
+qiime feature-table tabulate-seqs \
+  --i-data 480-rep-seqs.qza \
+  --o-visualization 480-rep-seqs.qzv
