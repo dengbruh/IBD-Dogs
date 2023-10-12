@@ -1,55 +1,31 @@
-#### Human Data ####
-
-# Train classifier for human data (27F and 534R)
+# Train classifier for V1-V4 (27F and 806R)
 qiime feature-classifier extract-reads \
   --i-sequences /mnt/datasets/silva_ref_files/silva-138-99-seqs.qza \
   --p-f-primer AGAGTTTGATYMTGGCTCAG \
-  --p-r-primer ATTACCGCGGCTGCTGG \
-  --p-trunc-len 100 \
-  --o-reads silva-138-99-27-534-nb-classifier.qza
+  --p-r-primer GGACTACNVGGGTWTCTAAT \
+  --p-trunc-len 480 \
+  --o-reads silva-138-99-27-806-nb-classifier.qza
 
 # Train classifier with trimmed reference sequences and reference taxonomy
 qiime feature-classifier fit-classifier-naive-bayes \
-  --i-reference-reads silva-138-99-27-534-nb-classifier.qza \
+  --i-reference-reads silva-138-99-27-806-nb-classifier.qza \
   --i-reference-taxonomy /mnt/datasets/silva_ref_files/silva-138-99-tax.qza \
-  --o-classifier 100-human_classifier.qza
+  --o-classifier 480-classifier.qza
 
 # Assign Taxonomy
 qiime feature-classifier classify-sklearn \
---i-classifier 100-human_classifier.qza \
---i-reads 100-rep-seqs.qza \
---o-classification 100-human_taxonomy.qza
+--i-classifier 480-classifier.qza \
+--i-reads 480-rep-seqs.qza \
+--o-classification 480-taxonomy.qza
 
 # Visualize taxonomy table
 qiime metadata tabulate \
---m-input-file 100-human_taxonomy.qza \
---o-visualization 100-human_taxonomy.qzv
+--m-input-file 480-taxonomy.qza \
+--o-visualization 480-taxonomy.qzv
 
 # Visualize taxonomy barplots
 qiime taxa barplot \
---i-table 100-table.qza \
---i-taxonomy 100-human_taxonomy.qza \
+--i-table 480-table.qza \
+--i-taxonomy 480-taxonomy.qza \
 --m-metadata-file IBD_metadata.tsv \
---o-visualization 100-human_taxa-bar-plots.qzv
-
-
-
-#### Dog Data ####
-
-# Assign Taxonomy
-qiime feature-classifier classify-sklearn \
-  --i-classifier /mnt/datasets/classifiers/silva-138-99-515-806-nb-classifier.qza \
-  --i-reads 100-rep-seqs.qza \
-  --o-classification 100-dog_taxonomy.qza
-
-# Visualize taxonomy table
-qiime metadata tabulate \
---m-input-file 100-dog_taxonomy.qza \
---o-visualization 100-dog_taxonomy.qzv
-
-# Visualize taxonomy barplots
-qiime taxa barplot \
---i-table 100-table.qza \
---i-taxonomy 100-dog_taxonomy.qza \
---m-metadata-file IBD_metadata.tsv \
---o-visualization 100-dog_taxa-bar-plots.qzv
+--o-visualization 480-taxa-bar-plots.qzv
