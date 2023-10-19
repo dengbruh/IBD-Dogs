@@ -1,14 +1,16 @@
+#################### 480 trunc length ########################
+
 # Train classifier for V1-V4 (27F and 806R)
 qiime feature-classifier extract-reads \
   --i-sequences /mnt/datasets/silva_ref_files/silva-138-99-seqs.qza \
   --p-f-primer AGAGTTTGATYMTGGCTCAG \
   --p-r-primer GGACTACNVGGGTWTCTAAT \
   --p-trunc-len 480 \
-  --o-reads silva-138-99-27-806-nb-classifier.qza
+  --o-reads 480-silva-138-99-27-806-nb-classifier.qza
 
 # Train classifier with trimmed reference sequences and reference taxonomy
 qiime feature-classifier fit-classifier-naive-bayes \
-  --i-reference-reads silva-138-99-27-806-nb-classifier.qza \
+  --i-reference-reads 480-silva-138-99-27-806-nb-classifier.qza \
   --i-reference-taxonomy /mnt/datasets/silva_ref_files/silva-138-99-tax.qza \
   --o-classifier 480-classifier.qza
 
@@ -29,3 +31,20 @@ qiime taxa barplot \
 --i-taxonomy 480-taxonomy.qza \
 --m-metadata-file IBD_metadata.tsv \
 --o-visualization 480-taxa-bar-plots.qzv
+
+
+#################### 100 trunc length ########################
+
+# Train classifier for V1-V4 (27F and 806R)
+qiime feature-classifier extract-reads \
+  --i-sequences /mnt/datasets/silva_ref_files/silva-138-99-seqs.qza \
+  --p-f-primer AGAGTTTGATYMTGGCTCAG \
+  --p-r-primer GGACTACNVGGGTWTCTAAT \
+  --p-trunc-len 100 \
+  --o-reads 100-silva-138-99-27-806-nb-classifier.qza
+
+# Train classifier with trimmed reference sequences and reference taxonomy
+qiime feature-classifier fit-classifier-naive-bayes \
+  --i-reference-reads 100-silva-138-99-27-806-nb-classifier.qza \
+  --i-reference-taxonomy /mnt/datasets/silva_ref_files/silva-138-99-tax.qza \
+  --o-classifier 480-classifier.qza
