@@ -1,5 +1,6 @@
 # Brian code
 
+### 2023-10-9
 scp -r root@10.19.139.129:/mnt/datasets/project_2/human_ibd/IBD_manifest.txt .
 scp -r root@10.19.139.129:/mnt/datasets/project_2/human_ibd/IBD_metadata.xlsx .
 
@@ -55,7 +56,7 @@ qiime feature-table tabulate-seqs \
   --i-data 100-rep-seqs.qza \
   --o-visualization 100-rep-seqs.qzv
 
-
+### 2023-10-11
 ## Generated new files using trunch-len 480
 tmux new -s Brian
 conda activate qiime2-2023.7
@@ -84,3 +85,22 @@ qiime feature-table summarize \
 qiime feature-table tabulate-seqs \
   --i-data 480-rep-seqs.qza \
   --o-visualization 480-rep-seqs.qzv
+
+### 2023-10-18
+## Generating rarefaction curve to determine sampling depth
+
+# Generate a tree for phylogenetic diversity analyses
+qiime phylogeny align-to-tree-mafft-fasttree \
+  --i-sequences 100-rep-seqs.qza \
+  --o-alignment aligned-rep-seqs.qza \
+  --o-masked-alignment masked-aligned-rep-seqs.qza \
+  --o-tree unrooted-tree.qza \
+  --o-rooted-tree rooted-tree.qza 
+
+# Alpha-rarefaction
+qiime diversity alpha-rarefaction \
+  --i-table 100-table.qza \
+  --i-phylogeny rooted-tree.qza \
+  --p-max-depth 45349 \
+  --m-metadata-file /data/project_2/IBD_metadata.tsv \
+  --o-visualization alpha-rarefaction.qzv
