@@ -1,0 +1,30 @@
+#### 3. Creating Files for export ####
+
+# Navigating to the correct folder
+cd /data/project_2/100_trunc
+
+# Creating a new directory
+mkdir project2_export
+
+# Exporting table.qza file
+qiime tools export \
+--input-path ../100-table.qza \
+--output-path table_export
+
+# Changing file type of table.qza file to make it human readable
+cd table_export
+biom convert \
+-i feature-table.biom \
+--to-tsv \
+-o feature-table.txt
+
+# Exporting rooted-tree.qza file
+cd ..
+qiime tools export \
+  --input-path ../rooted-tree.qza \
+  --output-path rooted_tree_export
+
+# Exporting taxonomy.qza file
+qiime tools export \
+  --input-path ../100-taxonomy.qza \
+  --output-path taxonomy_export 
