@@ -103,4 +103,4 @@ qiime diversity alpha-rarefaction \
   --i-phylogeny rooted-tree.qza \
   --p-max-depth 45349 \
   --m-metadata-file /data/project_2/IBD_metadata.tsv \
-  --o-visualization alpha-rarefaction.qzv
+  --o-visualization alpha-rarefaction.qzv 
