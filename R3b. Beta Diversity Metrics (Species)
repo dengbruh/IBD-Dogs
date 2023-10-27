@@ -1,0 +1,102 @@
+#### Loading phyloseq, tidyverse, ape, picante, and vegan ####
+library(phyloseq)
+library(ape)
+library(tidyverse)
+library(picante)
+library(vegan)
+
+
+#### Load in RData ####
+load("ibd_rare.RData")
+load("ibd_final.RData")
+
+# check which methods you can specify
+?distance
+
+#### Creating new column in metadata to compile both species and disease state ####
+sample_data(ibd_rare)[[38]] = paste(sample_data(ibd_rare)[[10]],sample_data(ibd_rare)[[15]])
+
+#### Extracting information for statistical tests ####
+alphadiv <- estimate_richness(ibd_rare)
+samp_dat <- sample_data(ibd_rare)
+samp_dat_wdiv <- data.frame(samp_dat, alphadiv)
+
+##############################################################################
+#### Beta-diversity - Bray ####
+# Calculating Bray
+bc_dm <- distance(ibd_rare, method="bray")
+pcoa_bc <- ordinate(ibd_rare, method="PCoA", distance=bc_dm)
+
+# Running permanova
+adonis2(bc_dm ~ `Species`, data=samp_dat_wdiv)
+
+# Plotting PCoA plot
+beta_bray_species <- plot_ordination(ibd_rare, pcoa_bc, color = "Species") +
+  stat_ellipse(type = "norm")
+
+beta_bray_species
+
+# Save Plot
+ggsave("beta_bray_species.png"
+       , beta_bray_species
+       , height=4, width=5)
+
+##############################################################################
+#### Beta-diversity - Unifrac ####
+# Calculating Unifrac
+uf_dm <- distance(ibd_rare, method="unifrac")
+pcoa_uf <- ordinate(ibd_rare, method="PCoA", distance=uf_dm)
+
+# Running permanova
+adonis2(uf_dm ~ `Species`, data=samp_dat_wdiv)
+
+# Plotting PCoA plot
+beta_unifrac_species <- plot_ordination(ibd_rare, pcoa_uf, color = "Species") +
+  stat_ellipse(type = "norm")
+
+beta_unifrac_species
+
+# Save Plot
+ggsave("beta_unifrac_species.png"
+       , beta_unifrac_species
+       , height=4, width=5)
+
+
+#### Beta-diversity - Weighted Unifrac ####
+# Calculating Unifrac
+wuf_dm <- distance(ibd_rare, method="wunifrac")
+pcoa_wuf <- ordinate(ibd_rare, method="PCoA", distance=wuf_dm)
+
+# Running permanova
+adonis2(wuf_dm ~ `Species`, data=samp_dat_wdiv)
+
+# Plotting PCoA plot
+beta_w_unifrac_species <- plot_ordination(ibd_rare, pcoa_wuf, color = "Species") +
+  stat_ellipse(type = "norm")
+
+beta_w_unifrac_species
+
+# Save Plot
+ggsave("beta_w_unifrac_species.png"
+       , beta_w_unifrac_species
+       , height=4, width=5)
+
+
+#### Beta-diversity - Jaccard ####
+# Calculating Jaccard
+jacc_dm <- distance(ibd_rare, method="jaccard",binary = TRUE)
+pcoa_jacc <- ordinate(ibd_rare, method="PCoA", distance=jacc_dm)
+
+# Running permanova
+adonis2(jacc_dm ~ `Species`, data=samp_dat_wdiv)
+
+# Plotting PCoA plot
+beta_jacc_species <- plot_ordination(ibd_rare, pcoa_jacc, color = "Species") +
+  stat_ellipse(type = "norm")
+
+beta_jacc_species
+
+# Save Plot
+ggsave("beta_jacc_species.png"
+       , beta_jacc_species
+       , height=4, width=5)
