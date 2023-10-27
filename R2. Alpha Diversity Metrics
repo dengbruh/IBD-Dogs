@@ -1,1 +1,125 @@
+#### Loading phyloseq, tidyverse, ape, picante, and ggsignif ####
+library(phyloseq)
+library(ape)
+library(tidyverse)
+library(picante)
+library(ggsignif)
 
+
+#### Load in RData ####
+load("ibd_rare.RData")
+load("ibd_final.RData")
+
+
+#### Creating new column in metadata to compile both species and disease state ####
+sample_data(ibd_rare)[[38]] = paste(sample_data(ibd_rare)[[10]],sample_data(ibd_rare)[[15]])
+
+
+#### Extracting information for statistical tests ####
+alphadiv <- estimate_richness(ibd_rare)
+samp_dat <- sample_data(ibd_rare)
+samp_dat_wdiv <- data.frame(samp_dat, alphadiv)
+
+##############################################################################
+#### Alpha diversity - Shannon ######
+# Running 2 way anova
+shannon_species_disease <- lm(Shannon ~ `disease_stat` * `Species`, data=samp_dat_wdiv)
+summary(aov(shannon_species_disease))
+TukeyHSD(aov(shannon_species_disease))
+
+# Creating the initial box plot #
+alpha_shannon <- ggplot(samp_dat_wdiv) + geom_boxplot(aes(x=disease_stat, y=Shannon)) +
+  ylab("Shannon Diversity") +
+  xlab("Disease State") +
+  facet_grid(~factor(`Species`, levels=c("Human","Dog")),scales = "free")
+
+alpha_shannon
+
+# Save plot
+ggsave(filename = "alpha_shannon.png"
+       , alpha_shannon
+       , height=4, width=6)
+
+##############################################################################
+#### Alpha diversity - Observered ######
+# Creating the initial box plot #
+alpha_observed <- ggplot(samp_dat_wdiv) + geom_boxplot(aes(x=disease_stat, y=Observed)) +
+  ylab("Observed Features") +
+  xlab("Disease State") +
+  facet_grid(~factor(`Species`, levels=c("Human","Dog")),scales = "free")
+
+alpha_observed
+
+# Save plot
+ggsave(filename = "alpha_observed.png"
+       , alpha_observed
+       , height=4, width=6)
+
+##############################################################################
+#### Alpha diversity - Faith's PD #####
+# Calculate Faith's phylogenetic diversity as PD
+phylo_dist <- pd(t(otu_table(ibd_rare)), phy_tree(ibd_rare),
+                 include.root=F) 
+
+# Add PD to metadata table
+sample_data(ibd_rare)$PD <- phylo_dist$PD
+
+# Plot any metadata category against the PD
+plot.pd <- ggplot(sample_data(ibd_rare), aes(disease_stat, PD)) + 
+  geom_boxplot() +
+  ylab("Phylogenetic Diversity") +
+  xlab("Disease State") +
+  facet_grid(~factor(`Species`, levels=c("Human","Dog")),scales = "free")
+plot.pd
+
+# Save plot
+ggsave(filename = "alpha_faith.png"
+       , plot.pd
+       , height=4, width=6)
+
+##############################################################################
+#### Alpha diversity - Simpson ######
+# Creating the initial box plot #
+alpha_simpson <- ggplot(samp_dat_wdiv) + geom_boxplot(aes(x=disease_stat, y=Simpson)) +
+  ylab("Simpson Index") +
+  xlab("Disease State") +
+  facet_grid(~factor(`Species`, levels=c("Human","Dog")),scales = "free")
+
+alpha_simpson
+
+# Save plot
+ggsave(filename = "alpha_simpson.png"
+       , alpha_simpson
+       , height=4, width=6)
+
+
+##############################################################################
+#### Alpha diversity - Chao ######
+# Creating the initial box plot #
+alpha_chao <- ggplot(samp_dat_wdiv) + geom_boxplot(aes(x=disease_stat, y=Chao1)) +
+  ylab("Chao Index") +
+  xlab("Disease State") +
+  facet_grid(~factor(`Species`, levels=c("Human","Dog")),scales = "free")
+
+alpha_chao
+
+# Save plot
+ggsave(filename = "alpha_chao.png"
+       , alpha_chao
+       , height=4, width=6)
+
+
+##############################################################################
+#### Alpha diversity - Fisher ######
+# Creating the initial box plot #
+alpha_fisher <- ggplot(samp_dat_wdiv) + geom_boxplot(aes(x=disease_stat, y=Fisher)) +
+  ylab("Fisher's Alpha Parameter") +
+  xlab("Disease State") +
+  facet_grid(~factor(`Species`, levels=c("Human","Dog")),scales = "free")
+
+alpha_fisher
+
+# Save plot
+ggsave(filename = "alpha_fisher.png"
+       , alpha_fisher
+       , height=4, width=6)
