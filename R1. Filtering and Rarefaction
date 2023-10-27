@@ -1,1 +1,58 @@
+#### Loading phyloseq, tidyverse, ape, vegan ####
+library(phyloseq)
+library(tidyverse)
+library(ape)
+library(vegan) #this was also loaded because rareify function is part of this package
 
+
+#### Load in the project 2 metadata,  OTU table, taxonomy file, and phylogenetic tree ####
+metafp <- "project2_export/IBD_metadata_human_sample_ID.tsv"
+meta <- read_delim(metafp, delim="\t")
+
+otufp <- "project2_export/feature-table.txt"
+otu <- read_delim(file = otufp, delim="\t", skip=1)
+
+taxfp <- "project2_export/taxonomy.tsv"
+tax <- read_delim(taxfp, delim="\t")
+
+phylotreefp <- "project2_export/tree.nwk"
+phylotree <- read.tree(phylotreefp)
+
+
+#### Formatting files ####
+otu_mat <- as.matrix(otu[,-1])
+rownames(otu_mat) <- otu$`#OTU ID`
+OTU <- otu_table(otu_mat, taxa_are_rows = TRUE)
+
+samp_df <- as.data.frame(meta[,-1])
+rownames(samp_df)<- meta$'#SampleID'
+SAMP <- sample_data(samp_df)
+
+tax_mat <- tax %>% select(-Confidence)%>%
+  separate(col=Taxon, sep="; "
+           , into = c("Domain","Phylum","Class","Order","Family","Genus","Species")) %>%
+  as.matrix()
+tax_mat <- tax_mat[,-1]
+rownames(tax_mat) <- tax$`Feature ID`
+TAX <- tax_table(tax_mat)
+
+
+#### Create phyloseq object ####
+ibd <- phyloseq(OTU, SAMP, TAX, phylotree)
+
+
+#### Filtering #####
+# Remove non-bacterial sequences, if any
+ibd_filt <- subset_taxa(ibd,  Domain == "d__Bacteria" & Class!="c__Chloroplast" & Family!="f__Mitochondria")
+# Remove ASVs that have less than 5 counts total
+ibd_final <- filter_taxa(ibd_filt, function(x) sum(x)>5, prune = TRUE)
+
+
+#### Rarefy samples to a depth of 8564 ####
+rarecurve(t(as.data.frame(otu_table(ibd_final))), cex=0.1)
+ibd_rare <- rarefy_even_depth(ibd_final, rngseed = 1, sample.size = 8564)
+
+
+##### Saving #####
+save(ibd_final, file="ibd_final.RData")
+save(ibd_rare, file="ibd_rare.RData")
