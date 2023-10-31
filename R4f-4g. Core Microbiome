@@ -1,0 +1,65 @@
+# Core Microbiome #
+
+
+
+#### Preparations ####
+
+# Downloa Packages
+install.packages("RColorBrewer")
+install.packages("reshape2")
+
+# Load Packages
+library(tidyverse)
+library(phyloseq)
+library(microbiome)
+library(ggVennDiagram)
+library(RColorBrewer)
+library(reshape2)
+
+# Load data (NOT rare file)
+load("Phyloseq/ibd_final.RData")
+
+# Convert to relative abundance (using compositional)
+ibd_RA <- transform_sample_counts(ibd_final, fun=function(x) x/sum(x))
+ibd_rel <- microbiome::transform(ibd_final, "compositional")
+
+# Filter dataset by disease
+dogs <- subset_samples(ibd_RA, `Species`=="Dog")
+humans <- subset_samples(ibd_RA, `Species`=="Human")
+dog_h <- subset_samples(dogs, `disease_stat`=="healthy")
+dog_ibd <- subset_samples(dogs, `disease_stat`=="IBD")
+hum_h <- subset_samples(humans, `disease_stat`=="Control")
+hum_ibd <- subset_samples(humans, `disease_stat`!="Control")
+hum_uc <- subset_samples(humans, `disease_stat`=="Ulcerative Colitis")
+hum_cd <- subset_samples(humans, `disease_stat`=="Crohn's Disease")
+
+# View filtered tables
+view(sample_data(dog_h))
+view(sample_data(dog_ibd))
+view(sample_data(hum_h))
+view(sample_data(hum_ibd))
+view(sample_data(hum_uc))
+view(sample_data(hum_cd))
+
+
+
+#### Core Heatmaps ####
+
+# Parameters
+prevalences <- seq(.05, 1, .05)
+detections <- round(10^seq(log10(0.01), log10(.2), length = 9), 3)
+gray <- gray(seq(0,1,length=5))
+
+# Plot (dog_h)
+p <- plot_core(dog_h,
+               plot.type = "heatmap", 
+               colours = gray,
+               prevalences = prevalences, 
+               detections = detections, 
+               min.prevalence = prevalence(dog_h, sort = TRUE)[100]) +
+  labs(x = "Detection Threshold\n(Relative Abundance (%))") +
+  theme(axis.text.y= element_text(size=8, face="italic"),
+        axis.text.x.bottom=element_text(size=8),
+        axis.title = element_text(size=10),
+        legend.text = element_text(size=8),
+        legend.title = element_text(size=10))
