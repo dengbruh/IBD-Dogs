@@ -33,6 +33,8 @@ qiime tools export \
 	--output-path seqs_export 
 	#This is how you can export your rep-seqs.qza to a .fna or .fasta file format
 
+	cd seqs_export
+	mv dna-sequences.fasta ..
 
 # filter the table.qza to remove all the features with 5 or lower counts. This will make the PICRUSt2 analysis much faster.
 
@@ -40,12 +42,19 @@ qiime feature-table filter-features \
   --i-table ~/data/project_2/100_trunc/100-table.qza \
   --p-min-frequency 5 \
   --o-filtered-table feature-frequency-filtered-table.qza
+
+qiime tools export \
+ --input-path feature-frequency-filtered-table.qza \
+ --output-path exported_table_biom
+
+ cd exported_table_biom
+ mv feature-table.biom ..
 							  				  
 							  
 #Running PICRUSt2 Analysis!
 #First, make sure you are in the picrust2-2.5.2/ folder.
 
-picrust2_pipeline.py -s path/to/study_seqs.fna -i path/to/study_seqs.biom -o picrust2_out_pipeline -p 1 	#This will 30-60 mins depending on your dataset.
+picrust2_pipeline.py -s dna-sequences.fasta -i feature-table.biom -o picrust2_out_pipeline -p 1 	#This will 30-60 mins depending on your dataset.
 
 
 #To annotate pathways with a useful description (OPTIONAL because there is a command in R to do the same thing)
