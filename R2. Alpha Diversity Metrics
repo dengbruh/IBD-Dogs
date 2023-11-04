@@ -22,104 +22,125 @@ samp_dat_wdiv <- data.frame(samp_dat, alphadiv)
 
 ##############################################################################
 #### Alpha diversity - Shannon ######
+
 # Running 2 way anova
-shannon_species_disease <- lm(Shannon ~ `disease_stat` * `Species`, data=samp_dat_wdiv)
+shannon_species_disease <- lm(Shannon ~ `V38`, data=samp_dat_wdiv)
 summary(aov(shannon_species_disease))
 TukeyHSD(aov(shannon_species_disease))
 
 # Creating the initial box plot #
-alpha_shannon <- ggplot(samp_dat_wdiv) + geom_boxplot(aes(x=disease_stat, y=Shannon)) +
+alpha_shannon <- ggplot(samp_dat_wdiv, aes(x=`V38`, y=Shannon)) +
+  geom_boxplot() +
+  geom_signif(comparisons = list(c("Dog Healthy","Human Healthy"),c("Dog IBD","Human Crohn's Disease"), c("Dog IBD", "Human Ulcerative Colitis")),
+              y_position = c(4.2, 4.5, 4.7),
+              annotations = c("****","*","****")) +
   ylab("Shannon Diversity") +
-  xlab("Disease State") +
-  facet_grid(~factor(`Species`, levels=c("Human","Dog")),scales = "free")
+  xlab("Species and Disease State")
 
 alpha_shannon
 
 # Save plot
 ggsave(filename = "alpha_shannon.png"
        , alpha_shannon
-       , height=4, width=6)
+       , height=6, width=10)
 
 ##############################################################################
 #### Alpha diversity - Observered ######
+# Running 2 way anova
+observed_species_disease <- lm(Observed ~ `V38`, data=samp_dat_wdiv)
+summary(aov(observed_species_disease))
+TukeyHSD(aov(observed_species_disease))
+
 # Creating the initial box plot #
-alpha_observed <- ggplot(samp_dat_wdiv) + geom_boxplot(aes(x=disease_stat, y=Observed)) +
+alpha_observed <- ggplot(samp_dat_wdiv, aes(x=`V38`, y=Observed)) +
+  geom_boxplot() +
+  geom_signif(comparisons = list(c("Dog Healthy","Human Healthy"),c("Dog IBD","Human Crohn's Disease"), c("Dog IBD", "Human Ulcerative Colitis")),
+              y_position = c(150, 180, 200),
+              annotations = c("****","****","****")) +
   ylab("Observed Features") +
-  xlab("Disease State") +
-  facet_grid(~factor(`Species`, levels=c("Human","Dog")),scales = "free")
+  xlab("Species and Disease State")
 
 alpha_observed
 
 # Save plot
 ggsave(filename = "alpha_observed.png"
        , alpha_observed
-       , height=4, width=6)
+       , height=6, width=10)
 
 ##############################################################################
 #### Alpha diversity - Faith's PD #####
+
 # Calculate Faith's phylogenetic diversity as PD
 phylo_dist <- pd(t(otu_table(ibd_rare)), phy_tree(ibd_rare),
                  include.root=F) 
 
 # Add PD to metadata table
-sample_data(ibd_rare)$PD <- phylo_dist$PD
+samp_dat_wfaith <- data.frame(samp_dat, phylo_dist)
+
+# Running 2 way anova
+faith_species_disease <- lm(PD ~ `V38`, data=samp_dat_wfaith)
+summary(aov(faith_species_disease))
+TukeyHSD(aov(faith_species_disease))
 
 # Plot any metadata category against the PD
-plot.pd <- ggplot(sample_data(ibd_rare), aes(disease_stat, PD)) + 
+plot.pd <- ggplot(samp_dat_wfaith, aes(x=`V38`, y=`PD`)) +
   geom_boxplot() +
-  ylab("Phylogenetic Diversity") +
-  xlab("Disease State") +
-  facet_grid(~factor(`Species`, levels=c("Human","Dog")),scales = "free")
+  geom_signif(comparisons = list(c("Dog Healthy","Human Healthy"),c("Dog IBD","Human Crohn's Disease"), c("Dog IBD", "Human Ulcerative Colitis")),
+              y_position = c(15, 17, 19),
+              annotations = c("****","****","****")) +
+  ylab("Faith's Phylogenetic Distance") +
+  xlab("Species and Disease State")
+
 plot.pd
 
 # Save plot
 ggsave(filename = "alpha_faith.png"
        , plot.pd
-       , height=4, width=6)
+       , height=6, width=10)
 
 ##############################################################################
 #### Alpha diversity - Simpson ######
+# Running 2 way anova
+simpson_species_disease <- lm(Simpson ~ `V38`, data=samp_dat_wdiv)
+summary(aov(simpson_species_disease))
+TukeyHSD(aov(simpson_species_disease))
+
 # Creating the initial box plot #
-alpha_simpson <- ggplot(samp_dat_wdiv) + geom_boxplot(aes(x=disease_stat, y=Simpson)) +
+alpha_simpson <- ggplot(samp_dat_wdiv, aes(x=`V38`, y=Simpson)) +
+  geom_boxplot() +
+  geom_signif(comparisons = list(c("Dog Healthy","Human Healthy"),c("Dog IBD","Human Crohn's Disease"), c("Dog IBD", "Human Ulcerative Colitis")),
+              y_position = c(1, 1.1, 1.2),
+              annotations = c("n.s.","n.s.","****")) +
   ylab("Simpson Index") +
-  xlab("Disease State") +
-  facet_grid(~factor(`Species`, levels=c("Human","Dog")),scales = "free")
+  xlab("Species and Disease State")
 
 alpha_simpson
 
 # Save plot
 ggsave(filename = "alpha_simpson.png"
        , alpha_simpson
-       , height=4, width=6)
+       , height=6, width=10)
 
 
 ##############################################################################
 #### Alpha diversity - Chao ######
+# Running 2 way anova
+chao_species_disease <- lm(Chao1 ~ `V38`, data=samp_dat_wdiv)
+summary(aov(chao_species_disease))
+TukeyHSD(aov(chao_species_disease))
+
 # Creating the initial box plot #
-alpha_chao <- ggplot(samp_dat_wdiv) + geom_boxplot(aes(x=disease_stat, y=Chao1)) +
+alpha_chao <- ggplot(samp_dat_wdiv, aes(x=`V38`, y=Chao1)) +
+  geom_boxplot() +
+  geom_signif(comparisons = list(c("Dog Healthy","Human Healthy"),c("Dog IBD","Human Crohn's Disease"), c("Dog IBD", "Human Ulcerative Colitis")),
+              y_position = c(145, 155, 165),
+              annotations = c("****","****","****")) +
   ylab("Chao Index") +
-  xlab("Disease State") +
-  facet_grid(~factor(`Species`, levels=c("Human","Dog")),scales = "free")
+  xlab("Species and Disease State")
 
 alpha_chao
 
 # Save plot
 ggsave(filename = "alpha_chao.png"
        , alpha_chao
-       , height=4, width=6)
-
-
-##############################################################################
-#### Alpha diversity - Fisher ######
-# Creating the initial box plot #
-alpha_fisher <- ggplot(samp_dat_wdiv) + geom_boxplot(aes(x=disease_stat, y=Fisher)) +
-  ylab("Fisher's Alpha Parameter") +
-  xlab("Disease State") +
-  facet_grid(~factor(`Species`, levels=c("Human","Dog")),scales = "free")
-
-alpha_fisher
-
-# Save plot
-ggsave(filename = "alpha_fisher.png"
-       , alpha_fisher
-       , height=4, width=6)
+       , height=6, width=10)
