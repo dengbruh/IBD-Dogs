@@ -28,17 +28,18 @@ bc_dm <- distance(ibd_rare, method="bray")
 pcoa_bc <- ordinate(ibd_rare, method="PCoA", distance=bc_dm)
 
 # Running permanova
-adonis2(bc_dm ~ `Species`, data=samp_dat_wdiv)
+adonis2(bc_dm ~ `Species` * `disease_stat`, data=samp_dat_wdiv)
 
 # Plotting PCoA plot
-beta_bray_species <- plot_ordination(ibd_rare, pcoa_bc, color = "Species") +
+beta_bray <- plot_ordination(ibd_rare, pcoa_bc, color = "V38") +
+  guides(color = guide_legend(title = "Species and Disease State")) +
   stat_ellipse(type = "norm")
 
-beta_bray_species
+beta_bray
 
 # Save Plot
-ggsave("beta_bray_species.png"
-       , beta_bray_species
+ggsave("beta_bray.png"
+       , beta_bray
        , height=4, width=5)
 
 ##############################################################################
@@ -48,17 +49,18 @@ uf_dm <- distance(ibd_rare, method="unifrac")
 pcoa_uf <- ordinate(ibd_rare, method="PCoA", distance=uf_dm)
 
 # Running permanova
-adonis2(uf_dm ~ `Species`, data=samp_dat_wdiv)
+adonis2(uf_dm ~ `Species` * `disease_stat`, data=samp_dat_wdiv)
 
 # Plotting PCoA plot
-beta_unifrac_species <- plot_ordination(ibd_rare, pcoa_uf, color = "Species") +
+beta_unifrac <- plot_ordination(ibd_rare, pcoa_uf, color = "V38") +
+  guides(color = guide_legend(title = "Species and Disease State")) +
   stat_ellipse(type = "norm")
 
-beta_unifrac_species
+beta_unifrac
 
 # Save Plot
-ggsave("beta_unifrac_species.png"
-       , beta_unifrac_species
+ggsave("beta_unifrac.png"
+       , beta_unifrac
        , height=4, width=5)
 
 
@@ -68,17 +70,18 @@ wuf_dm <- distance(ibd_rare, method="wunifrac")
 pcoa_wuf <- ordinate(ibd_rare, method="PCoA", distance=wuf_dm)
 
 # Running permanova
-adonis2(wuf_dm ~ `Species`, data=samp_dat_wdiv)
+adonis2(wuf_dm ~ `Species` * `disease_stat`, data=samp_dat_wdiv)
 
 # Plotting PCoA plot
-beta_w_unifrac_species <- plot_ordination(ibd_rare, pcoa_wuf, color = "Species") +
+beta_w_unifrac <- plot_ordination(ibd_rare, pcoa_wuf, color = "V38") +
+  guides(color = guide_legend(title = "Species and Disease State")) +
   stat_ellipse(type = "norm")
 
-beta_w_unifrac_species
+beta_w_unifrac
 
 # Save Plot
-ggsave("beta_w_unifrac_species.png"
-       , beta_w_unifrac_species
+ggsave("beta_weighted_unifrac.png"
+       , beta_w_unifrac
        , height=4, width=5)
 
 
@@ -88,15 +91,16 @@ jacc_dm <- distance(ibd_rare, method="jaccard",binary = TRUE)
 pcoa_jacc <- ordinate(ibd_rare, method="PCoA", distance=jacc_dm)
 
 # Running permanova
-adonis2(jacc_dm ~ `Species`, data=samp_dat_wdiv)
+adonis2(jacc_dm ~ `Species` * `disease_stat`, data=samp_dat_wdiv)
 
 # Plotting PCoA plot
-beta_jacc_species <- plot_ordination(ibd_rare, pcoa_jacc, color = "Species") +
+beta_jacc <- plot_ordination(ibd_rare, pcoa_jacc, color = "V38") +
+  guides(color = guide_legend(title = "Species and Disease State")) +
   stat_ellipse(type = "norm")
 
-beta_jacc_species
+beta_jacc
 
 # Save Plot
-ggsave("beta_jacc_species.png"
-       , beta_jacc_species
+ggsave("beta_jacc.png"
+       , beta_jacc
        , height=4, width=5)
