@@ -47,7 +47,8 @@ merged_results_species <- tax_table(ibd_final) %>% as.data.frame() %>%
   right_join(sigASVs_species) %>%
   arrange(log2FoldChange) %>% # ascending order
   mutate(Genus = make.unique(Genus)) %>% # so we don't have repeating genera on x axis
-  mutate(Genus = factor(Genus, levels=unique(Genus)))
+  mutate(Genus = factor(Genus, levels=unique(Genus))) %>%
+  slice(c(1:10, n() - 9:n()))
 
 # Make DESeq plot
 species_deseq_barplot <- ggplot(merged_results_species) +
@@ -108,7 +109,8 @@ merged_results_healthy <- tax_table(ibd_final) %>% as.data.frame() %>%
   right_join(sigASVs_healthy) %>%
   arrange(log2FoldChange) %>% # ascending order
   mutate(Genus = make.unique(Genus)) %>% # so we don't have repeating genera on x axis
-  mutate(Genus = factor(Genus, levels=unique(Genus)))
+  mutate(Genus = factor(Genus, levels=unique(Genus))) %>%
+  slice(c(1:10, n() - 9:n()))
 
 # Make DESeq plot
 healthy_deseq_barplot <- ggplot(merged_results_healthy) +
@@ -169,7 +171,8 @@ merged_results_UC <- tax_table(ibd_final) %>% as.data.frame() %>%
   right_join(sigASVs_UC) %>%
   arrange(log2FoldChange) %>% # ascending order
   mutate(Genus = make.unique(Genus)) %>% # so we don't have repeating genera on x axis
-  mutate(Genus = factor(Genus, levels=unique(Genus)))
+  mutate(Genus = factor(Genus, levels=unique(Genus))) %>%
+  slice(c(1:10, n() - 9:n()))
 
 # Make DESeq plot
 UC_deseq_barplot <- ggplot(merged_results_UC) +
@@ -230,7 +233,8 @@ merged_results_CD <- tax_table(ibd_final) %>% as.data.frame() %>%
   right_join(sigASVs_CD) %>%
   arrange(log2FoldChange) %>% # ascending order
   mutate(Genus = make.unique(Genus)) %>% # so we don't have repeating genera on x axis
-  mutate(Genus = factor(Genus, levels=unique(Genus)))
+  mutate(Genus = factor(Genus, levels=unique(Genus))) %>%
+  slice(c(1:10, n() - 9:n()))
 
 # Make DESeq plot
 CD_deseq_barplot <- ggplot(merged_results_CD) +
