@@ -1,7 +1,6 @@
 # Core Microbiome #
 
 
-
 #### Preparations ####
 
 # Download Packages
@@ -83,6 +82,8 @@ heat_dog_h <- plot_core(dog_h, plot.type = "heatmap",
         legend.title = element_text(size=10),
         plot.title = element_text(hjust = 0.5))
 print(heat_dog_h)
+ggsave("heat_dog_healthy.png", plot = heat_dog_h, width = 10, height = 5)
+
 
 # 2. Plot (dog_ibd)
 heat_dog_ibd <- plot_core(dog_ibd, plot.type = "heatmap",
@@ -100,6 +101,7 @@ heat_dog_ibd <- plot_core(dog_ibd, plot.type = "heatmap",
         legend.title = element_text(size=10),
         plot.title = element_text(hjust = 0.5))
 print(heat_dog_ibd)
+ggsave("heat_dog_ibd.png", plot = heat_dog_ibd, width = 10, height = 5)
 
 # 3. Plot (hum_h)
 heat_hum_h <- plot_core(hum_h, plot.type = "heatmap",
@@ -117,6 +119,7 @@ heat_hum_h <- plot_core(hum_h, plot.type = "heatmap",
         legend.title = element_text(size=10),
         plot.title = element_text(hjust = 0.5))
 print(heat_hum_h)
+ggsave("heat_human_healthy.png", plot = heat_hum_h, width = 10, height = 5)
 
 # 4. Plot (hum_ibd)
 heat_hum_ibd <- plot_core(hum_ibd, plot.type = "heatmap",
@@ -134,6 +137,7 @@ heat_hum_ibd <- plot_core(hum_ibd, plot.type = "heatmap",
         legend.title = element_text(size=10),
         plot.title = element_text(hjust = 0.5))
 print(heat_hum_ibd)
+ggsave("heat_human_ibd.png", plot = heat_hum_ibd, width = 10, height = 5)
 
 # 5. Plot (hum_uc)
 heat_hum_uc <- plot_core(hum_uc, plot.type = "heatmap",
@@ -151,6 +155,7 @@ heat_hum_uc <- plot_core(hum_uc, plot.type = "heatmap",
         legend.title = element_text(size=10),
         plot.title = element_text(hjust = 0.5))
 print(heat_hum_uc)
+ggsave("heat_human_uc.png", plot = heat_hum_uc, width = 10, height = 5)
 
 # 6. Plot (hum_cd)
 heat_hum_cd <- plot_core(hum_cd, plot.type = "heatmap",
@@ -168,144 +173,198 @@ heat_hum_cd <- plot_core(hum_cd, plot.type = "heatmap",
         legend.title = element_text(size=10),
         plot.title = element_text(hjust = 0.5))
 print(heat_hum_cd)
+ggsave("heat_human_cd.png", plot = heat_hum_cd, width = 10, height = 5)
 
 
 
 #### Core Microbiomes ####
 dog_h.core <- core(dog_h, detection = 0, prevalence = 50/100)
-dog_ibd.core <- core(dog_h, detection = 0, prevalence = 50/100)
-hum_h.core <- core(dog_h, detection = 0, prevalence = 50/100)
-hum_ibd.core <- core(dog_h, detection = 0, prevalence = 50/100)
-hum_uc.core <- core(dog_h, detection = 0, prevalence = 50/100)
-hum_cd.core <- core(dog_h, detection = 0, prevalence = 50/100)
+dog_ibd.core <- core(dog_ibd, detection = 0, prevalence = 50/100)
+hum_h.core <- core(hum_h, detection = 0, prevalence = 50/100)
+hum_ibd.core <- core(hum_ibd, detection = 0, prevalence = 50/100)
+hum_uc.core <- core(hum_uc, detection = 0, prevalence = 50/100)
+hum_cd.core <- core(hum_cd, detection = 0, prevalence = 50/100)
 
 
 
-##### Changing otu to taxonomy ####
-
-# Sort taxa names
-dog_h.df <- heat_dog_h$data
-dog_h.list <- dog_h.df$Taxa
-
-dog_ibd.df <- heat_dog_ibd$data
-dog_ibd.list <- dog_ibd.df$Taxa
-
-hum_h.df <- heat_hum_h$data
-hum_h.list <- hum_h.df$Taxa
-
-hum_ibd.df <- heat_hum_ibd$data
-hum_ibd.list <- hum_ibd.df$Taxa
-
-hum_uc.df <- heat_hum_uc$data
-hum_uc.list <- hum_uc.df$Taxa
-
-hum_cd.df <- heat_hum_cd$data
-hum_cd.list <- hum_cd.df$Taxa
-
-# Check the OTU ids
-print(dog_h.list)
-print(dog_ibd.list)
-print(hum_h.list)
-print(hum_ibd.list)
-print(hum_uc.list)
-print(hum_cd.list)
-
-#get the taxonomy data
-dog_h.tax <- tax_table(dog_h.core)
-dog_h.tax <- as.data.frame(dog_h.tax)
-
-dog_ibd.tax <- tax_table(dog_ibd.core)
-dog_ibd.tax <- as.data.frame(dog_ibd.tax)
-
-hum_h.tax <- tax_table(hum_h.core)
-hum_h.tax <- as.data.frame(hum_h.tax)
-
-hum_ibd.tax <- tax_table(hum_ibd.core)
-hum_ibd.tax <- as.data.frame(hum_ibd.tax)
-
-hum_uc.tax <- tax_table(hum_uc.core)
-hum_uc.tax <- as.data.frame(hum_uc.tax)
-
-hum_cd.tax <- tax_table(hum_cd.core)
-hum_cd.tax <- as.data.frame(hum_cd.tax)
-
-# Add the OTUs to last column
-dog_h.tax$OTU <- rownames(dog_h.tax)
-dog_ibd.tax$OTU <- rownames(dog_ibd.tax)
-hum_h.tax$OTU <- rownames(hum_h.tax)
-hum_ibd.tax$OTU <- rownames(hum_ibd.tax)
-hum_uc.tax$OTU <- rownames(hum_uc.tax)
-hum_cd.tax$OTU <- rownames(hum_cd.tax)
-
-# Select taxonomy of only those OTUs that are used in the plot
-dog_h.tax2 <- dplyr::filter(dog_h.tax, rownames(dog_h.tax) %in% dog_h.list)
-dog_ibd.tax2 <- dplyr::filter(dog_ibd.tax, rownames(dog_ibd.tax) %in% dog_ibd.list)
-hum_h.tax2 <- dplyr::filter(hum_h.tax, rownames(hum_h.tax) %in% hum_h.list)
-hum_ibd.tax2 <- dplyr::filter(hum_ibd.tax, rownames(hum_ibd.tax) %in% hum_ibd.list)
-hum_uc.tax2 <- dplyr::filter(hum_uc.tax, rownames(hum_uc.tax) %in% hum_uc.list)
-hum_cd.tax2 <- dplyr::filter(hum_cd.tax, rownames(hum_cd.tax) %in% hum_cd.list)
-
-# Merge the taxa info
-dog_h.tax.unit <- tidyr::unite(dog_h.tax2, Taxa_level,c("Genus", "Species", "OTU"), sep = "_", remove = TRUE)
-dog_h.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", dog_h.tax.unit$Taxa_level)
-
-dog_ibd.tax.unit <- tidyr::unite(dog_ibd.tax2, Taxa_level,c("Genus", "Species", "OTU"), sep = "_", remove = TRUE)
-dog_ibd.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", dog_ibd.tax.unit$Taxa_level)
-
-hum_h.tax.unit <- tidyr::unite(hum_h.tax2, Taxa_level,c("Genus", "Species", "OTU"), sep = "_", remove = TRUE)
-hum_h.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", hum_h.tax.unit$Taxa_level)
-
-hum_ibd.tax.unit <- tidyr::unite(hum_ibd.tax2, Taxa_level,c("Genus", "Species", "OTU"), sep = "_", remove = TRUE)
-hum_ibd.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", hum_ibd.tax.unit$Taxa_level)
-
-hum_uc.tax.unit <- tidyr::unite(hum_uc.tax2, Taxa_level,c("Genus", "Species", "OTU"), sep = "_", remove = TRUE)
-hum_uc.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", hum_uc.tax.unit$Taxa_level)
-
-hum_cd.tax.unit <- tidyr::unite(hum_cd.tax2, Taxa_level,c("Genus", "Species", "OTU"), sep = "_", remove = TRUE)
-hum_cd.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", hum_cd.tax.unit$Taxa_level)
-
-
-#### Work on these !! ####
-
-# Add this new information into the plot data df
-dog_h.df$Taxa <- dog_h.tax.unit$Taxa_level
-dog_ibd.df$Taxa <- dog_ibd.tax.unit$Taxa_level
-hum_h.df$Taxa <- hum_h.tax.unit$Taxa_level
-hum_ibd.df$Taxa <- hum_ibd.tax.unit$Taxa_level
-hum_uc.df$Taxa <- hum_uc.tax.unit$Taxa_level
-hum_cd.df$Taxa <- hum_cd.tax.unit$Taxa_level
-
-view(hum_cd.df$Taxa)
-
-# Can now see we have the taxonomic information
-knitr::kable(head(df))
-
-
-
-
-
-
-view(dog_ibd.list)
-
-
+                  ##### Changing otu to taxonomy (not successful) ####
+                  
+                  # Sort taxa names
+                  dog_h.df <- heat_dog_h$data
+                  dog_h.list <- dog_h.df$Taxa
+                  
+                  dog_ibd.df <- heat_dog_ibd$data
+                  dog_ibd.list <- dog_ibd.df$Taxa
+                  
+                  hum_h.df <- heat_hum_h$data
+                  hum_h.list <- hum_h.df$Taxa
+                  
+                  hum_ibd.df <- heat_hum_ibd$data
+                  hum_ibd.list <- hum_ibd.df$Taxa
+                  
+                  hum_uc.df <- heat_hum_uc$data
+                  hum_uc.list <- hum_uc.df$Taxa
+                  
+                  hum_cd.df <- heat_hum_cd$data
+                  hum_cd.list <- hum_cd.df$Taxa
+                  
+                  # Check the OTU ids
+                  print(dog_h.list)
+                  print(dog_ibd.list)
+                  print(hum_h.list)
+                  print(hum_ibd.list)
+                  print(hum_uc.list)
+                  print(hum_cd.list)
+                  
+                  #get the taxonomy data
+                  dog_h.tax <- tax_table(dog_h.core)
+                  dog_h.tax <- as.data.frame(dog_h.tax)
+                  
+                  dog_ibd.tax <- tax_table(dog_ibd.core)
+                  dog_ibd.tax <- as.data.frame(dog_ibd.tax)
+                  
+                  hum_h.tax <- tax_table(hum_h.core)
+                  hum_h.tax <- as.data.frame(hum_h.tax)
+                  
+                  hum_ibd.tax <- tax_table(hum_ibd.core)
+                  hum_ibd.tax <- as.data.frame(hum_ibd.tax)
+                  
+                  hum_uc.tax <- tax_table(hum_uc.core)
+                  hum_uc.tax <- as.data.frame(hum_uc.tax)
+                  
+                  hum_cd.tax <- tax_table(hum_cd.core)
+                  hum_cd.tax <- as.data.frame(hum_cd.tax)
+                  
+                  # Add the OTUs to last column
+                  dog_h.tax$OTU <- rownames(dog_h.tax)
+                  dog_ibd.tax$OTU <- rownames(dog_ibd.tax)
+                  hum_h.tax$OTU <- rownames(hum_h.tax)
+                  hum_ibd.tax$OTU <- rownames(hum_ibd.tax)
+                  hum_uc.tax$OTU <- rownames(hum_uc.tax)
+                  hum_cd.tax$OTU <- rownames(hum_cd.tax)
+                  
+                  # Select taxonomy of only those OTUs that are used in the plot
+                  dog_h.tax2 <- dplyr::filter(dog_h.tax, rownames(dog_h.tax) %in% dog_h.list)
+                  dog_ibd.tax2 <- dplyr::filter(dog_ibd.tax, rownames(dog_ibd.tax) %in% dog_ibd.list)
+                  hum_h.tax2 <- dplyr::filter(hum_h.tax, rownames(hum_h.tax) %in% hum_h.list)
+                  hum_ibd.tax2 <- dplyr::filter(hum_ibd.tax, rownames(hum_ibd.tax) %in% hum_ibd.list)
+                  hum_uc.tax2 <- dplyr::filter(hum_uc.tax, rownames(hum_uc.tax) %in% hum_uc.list)
+                  hum_cd.tax2 <- dplyr::filter(hum_cd.tax, rownames(hum_cd.tax) %in% hum_cd.list)
+                  
+                  # Merge the taxa info
+                  dog_h.tax.unit <- tidyr::unite(dog_h.tax2, Taxa_level,c("Genus", "Species", "OTU"), sep = "_", remove = TRUE)
+                  dog_h.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", dog_h.tax.unit$Taxa_level)
+                  
+                  dog_ibd.tax.unit <- tidyr::unite(dog_ibd.tax2, Taxa_level,c("Genus", "Species", "OTU"), sep = "_", remove = TRUE)
+                  dog_ibd.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", dog_ibd.tax.unit$Taxa_level)
+                  
+                  hum_h.tax.unit <- tidyr::unite(hum_h.tax2, Taxa_level,c("Genus", "Species", "OTU"), sep = "_", remove = TRUE)
+                  hum_h.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", hum_h.tax.unit$Taxa_level)
+                  
+                  hum_ibd.tax.unit <- tidyr::unite(hum_ibd.tax2, Taxa_level,c("Genus", "Species", "OTU"), sep = "_", remove = TRUE)
+                  hum_ibd.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", hum_ibd.tax.unit$Taxa_level)
+                  
+                  hum_uc.tax.unit <- tidyr::unite(hum_uc.tax2, Taxa_level,c("Genus", "Species", "OTU"), sep = "_", remove = TRUE)
+                  hum_uc.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", hum_uc.tax.unit$Taxa_level)
+                  
+                  hum_cd.tax.unit <- tidyr::unite(hum_cd.tax2, Taxa_level,c("Genus", "Species", "OTU"), sep = "_", remove = TRUE)
+                  hum_cd.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", hum_cd.tax.unit$Taxa_level)
+                  
+                  
+                  #### Work on these !! ####
+                  
+                  # Add this new information into the plot data df
+                  dog_h.df$Taxa <- dog_h.tax.unit$Taxa_level
+                  dog_ibd.df$Taxa <- dog_ibd.tax.unit$Taxa_level
+                  hum_h.df$Taxa <- hum_h.tax.unit$Taxa_level
+                  hum_ibd.df$Taxa <- hum_ibd.tax.unit$Taxa_level
+                  hum_uc.df$Taxa <- hum_uc.tax.unit$Taxa_level
+                  hum_cd.df$Taxa <- hum_cd.tax.unit$Taxa_level
+                  
+                  view(hum_cd.df$Taxa)
+                  
+                  # Can now see we have the taxonomic information
+                  knitr::kable(head(df))
+                  
+                  view(dog_ibd.list)
 
 --------
 
+#### Comparing Core Microbiomes ####
 
-# Remove prefixes and underlines
-tax_unit <- tax
-tax_unit$Genus <- gsub(pattern="g__",replacement="", tax_unit$Genus)
-tax_unit$Species <- gsub(pattern="s__",replacement="", tax_unit$Species)
-tax_unit$Species <- gsub(pattern="_",replacement=" ", tax_unit$Species)
+#  Core Members
+dog_h.corem <- core_members(dog_h, detection=0, prevalence = 0.50)
+view(tax_table(prune_taxa(dog_h.corem,ibd_final)))
+                  
+dog_ibd.corem <- core_members(dog_ibd, detection=0, prevalence = 0.50)
+view(tax_table(prune_taxa(dog_ibd.corem,ibd_final)))
 
-view(dog_h.tax.unit)
+hum_h.corem <- core_members(hum_h, detection=0, prevalence = 0.50)
+view(tax_table(prune_taxa(hum_h.corem,ibd_final)))
+
+hum_ibd.corem <- core_members(hum_ibd, detection=0, prevalence = 0.50)
+view(tax_table(prune_taxa(hum_ibd.corem,ibd_final)))
+
+hum_uc.corem <- core_members(hum_uc, detection=0, prevalence = 0.50)
+view(tax_table(prune_taxa(hum_uc.corem,ibd_final)))
+
+hum_cd.corem <- core_members(hum_cd, detection=0, prevalence = 0.50)
+view(tax_table(prune_taxa(hum_cd.corem,ibd_final)))
 
 
+#### Venn Diagrams ####
 
+# Dog H vs Dog IBD
+dogh_dogibd_list <- list("Healthy [Dog]" = dog_h.corem, "IBD [Dog]" = dog_ibd.corem)
+dogh_dogibd_venn <- ggVennDiagram(x = dogh_dogibd_list)
+ggsave("dogh_dogibd_venn.png", dogh_dogibd_venn)
 
-dog_h
-dog_ibd
-hum_h
-hum_ibd
-hum_uc
-hum_cd
+# Human H vs Human IBD
+humh_humibd_list <- list("Healthy [Human]" = hum_h.corem, "IBD [Human]" = hum_ibd.corem)
+humh_humibd_venn <- ggVennDiagram(x = humh_humibd_list)
+ggsave("humh_humibd_venn.png", humh_humibd_venn)
+
+# Humam H vs Human UC vs Human CD
+humh_humuc_humcd_list <- list("UC \n [Human]" = hum_uc.corem, "Healthy [Human]" = hum_h.corem, "CD \n [Human]" = hum_cd.corem)
+humh_humuc_humcd_venn <- ggVennDiagram(x = humh_humuc_humcd_list)
+ggsave("humh_humuc_humcd_venn.png", humh_humuc_humcd_venn)
+
+# Human H vs Human UC
+humh_humuc_list <- list("Healthy [Human]" = hum_h.corem, "UC [Human]" = hum_uc.corem)
+humh_humuc_venn <- ggVennDiagram(x = humh_humuc_list)
+ggsave("humh_humuc_venn.png", humh_humuc_venn)
+
+# Human H vs Human CD
+humh_humcd_list <- list("Healthy [Human]" = hum_h.corem, "CD [Human]" = hum_cd.corem)
+humh_humcd_venn <- ggVennDiagram(x = humh_humcd_list)
+ggsave("humh_humcd_venn.png", humh_humcd_venn)
+
+# Human UC vs Human CD
+humuc_humcd_list <- list("UC [Human]" = hum_uc.corem, "CD [Human]" = hum_cd.corem)
+humuc_humcd_venn <- ggVennDiagram(x = humuc_humcd_list)
+ggsave("humuc_humcd_venn.png", humuc_humcd_venn)
+
+# Dog H  vs Human H
+dogh_humh_list <- list("Healthy [Dog]" = dog_h.corem, "Healthy [Human]" = hum_h.corem)
+dogh_humh_venn <- ggVennDiagram(x = dogh_humh_list)
+ggsave("dogh_humh_venn.png", dogh_humh_venn)
+
+# Dog IBD vs Human IBD
+dogibd_humibd_list <- list("IBD [Dog]" = dog_ibd.corem, "IBD [Human]" = hum_ibd.corem)
+dogibd_humibd_venn <- ggVennDiagram(x = dogibd_humibd_list)
+ggsave("dogibd_humibd_venn.png", dogibd_humibd_venn)
+
+# Dog IBD vs Human UC vs Human CD
+dogibd_humuc_humcd_list <- list("UC \n [Human]" = hum_uc.corem, "IBD [Dog]" = dog_ibd.corem, "CD \n [Human]" = hum_cd.corem)
+dogibd_humuc_humcd_venn <- ggVennDiagram(x = dogibd_humuc_humcd_list)
+ggsave("dogibd_humuc_humcd_venn.png", dogibd_humuc_humcd_venn)
+
+# Dog IBD vs Human UC
+dogibd_humuc_list <- list("IBD [Dog]" = dog_ibd.corem, "UC [Human]" = hum_uc.corem)
+dogibd_humuc_venn <- ggVennDiagram(x = dogibd_humuc_list)
+ggsave("dogibd_humuc_venn.png", dogibd_humuc_venn)
+
+# Dog IBD vs Human CD
+dogibd_humcd_list <- list("IBD [Dog]" = dog_ibd.corem, "CD [Human]" = hum_cd.corem)
+dogibd_humcd_venn <- ggVennDiagram(x = dogibd_humcd_list)
+ggsave("dogibd_humcd_venn.png", dogibd_humcd_venn)
