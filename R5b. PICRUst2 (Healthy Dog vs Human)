@@ -22,6 +22,7 @@ library(ggprism)
 library(patchwork)
 library(DESeq2)
 library(ggh4x)
+library(dplyr)
 
 #loading a custom function to provide all DESeq2 results
 source("DESeq2_function.R")
@@ -41,6 +42,7 @@ metadata <- read_delim(
 
 #Removing all columns that include NA's for the pathways_daa() function
 metadata = metadata[ , colSums(is.na(metadata)) == 0]
+
 #Filter your metadata as needed to look at specific comparisons
 healthy_only_metadata = metadata %>%
   filter(disease_stat == "Healthy")
@@ -77,13 +79,25 @@ metacyc_daa_annotated_results_df <- pathway_annotation(pathway = "MetaCyc", daa_
 # Generate pathway heatmap
 # Please change column_to_rownames() to the feature column if you are not using example dataset
 # Please change group to "your_group_column" if you are not using example dataset
-feature_with_p_0.05 <- metacyc_daa_results_df %>% filter(p_adjust < 0.05)
-picrust2_pathway_heatmap_healthy <- pathway_heatmap(abundance = abundance_data_filtered %>% filter(pathway %in% feature_with_p_0.05$feature) %>% column_to_rownames("pathway"), metadata = healthy_only_metadata, group = "Species")
+feature_with_p_0.05 <- metacyc_daa_annotated_results_df %>% filter(p_adjust < 0.05)
+
+picrust2_pathway_heatmap_healthy <- pathway_heatmap(
+  abundance = abundance_data_filtered %>%
+    right_join(
+      metacyc_daa_annotated_results_df %>% select(all_of(c("feature","description"))),
+      by = c("pathway" = "feature")
+    ) %>% 
+    filter(pathway %in% feature_with_p_0.05$feature) %>% 
+    select(-"pathway") %>% 
+    column_to_rownames("description"),
+  metadata = healthy_only_metadata, 
+  group = "Species"
+)
 
 # Saving pathway heatmap
 ggsave(filename = "picrust2_pathway_heatmap_healthy.png"
        , picrust2_pathway_heatmap_healthy
-       , height=40, width=8)
+       , height=30, width=20)
 
 # Generate pathway PCA plot
 # Please change column_to_rownames() to the feature column if you are not using example dataset
@@ -106,5 +120,10 @@ ggsave(filename = "picrust2_pathway_pca_healthy.png"
 #This dataframe shows the same results as the "metacyc_daa_results_df" above, but it also includes the log2foldchange information that is most valuable to us.
 
 #Here is an example
+
+abundance_healthy_deseq <- right_join(abundance_data_filtered, metacyc_daa_annotated_results_df, select(all_of(c("feature","description"))), by = c("pathway" = "feature"))
+colnames(abundance_healthy_deseq)[1] <- "unlabelled pathway"
+colnames(abundance_healthy_deseq)[106] <- "pathway"
+    
 healthy_res =  DEseq2_function(abundance_data_filtered,healthy_only_metadata)
 View(healthy_res)

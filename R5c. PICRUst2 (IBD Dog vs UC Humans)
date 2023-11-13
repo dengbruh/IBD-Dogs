@@ -77,13 +77,25 @@ metacyc_daa_annotated_results_df_IBD_UC <- pathway_annotation(pathway = "MetaCyc
 # Generate pathway heatmap
 # Please change column_to_rownames() to the feature column if you are not using example dataset
 # Please change group to "your_group_column" if you are not using example dataset
-feature_with_p_0.05 <- metacyc_daa_results_df_IBD_UC %>% filter(p_adjust < 0.05)
-picrust2_pathway_heatmap_IBD_UC <- pathway_heatmap(abundance = abundance_data_filtered_IBD_UC %>% filter(pathway %in% feature_with_p_0.05$feature) %>% column_to_rownames("pathway"), metadata = IBD_UC_only_metadata, group = "Species")
+feature_with_p_0.05 <- metacyc_daa_annotated_results_df_IBD_UC %>% filter(p_adjust < 0.05)
+
+picrust2_pathway_heatmap_IBD_UC <- pathway_heatmap(
+  abundance = abundance_data_filtered_IBD_UC %>%
+    right_join(
+      metacyc_daa_annotated_results_df %>% select(all_of(c("feature","description"))),
+      by = c("pathway" = "feature")
+    ) %>% 
+    filter(pathway %in% feature_with_p_0.05$feature) %>% 
+    select(-"pathway") %>% 
+    column_to_rownames("description"),
+  metadata = IBD_UC_only_metadata, 
+  group = "Species"
+)
 
 # Saving pathway heatmap
 ggsave(filename = "picrust2_pathway_heatmap_IBD_UC.png"
        , picrust2_pathway_heatmap_IBD_UC
-       , height=40, width=8)
+       , height=30, width=20)
 
 # Generate pathway PCA plot
 # Please change column_to_rownames() to the feature column if you are not using example dataset
@@ -106,5 +118,9 @@ ggsave(filename = "picrust2_pathway_pca_IBD_UC.png"
 #This dataframe shows the same results as the "metacyc_daa_results_df" above, but it also includes the log2foldchange information that is most valuable to us.
 
 #Here is an example
+abundance_IBD_UC_deseq <- right_join(abundance_data_filtered_IBD_UC, metacyc_daa_annotated_results_df_IBD_UC, select(all_of(c("feature","description"))), by = c("pathway" = "feature"))
+colnames(abundance_healthy_deseq)[1] <- "unlabelled pathway"
+colnames(abundance_healthy_deseq)[106] <- "pathway"
+
 IBD_UC_res =  DEseq2_function(abundance_data_filtered_IBD_UC,IBD_UC_only_metadata)
 View(IBD_UC_res)
