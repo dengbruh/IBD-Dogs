@@ -64,7 +64,6 @@ prevalences <- seq(.05, 1, .05)
 # Parameters
 prevalences <- seq(.05, 1, .05)
 det <- c(0, 0.1, 0.5, 2, 5, 20)/100
-gray <- gray(seq(0,1,length=5))
 
 # 1. Plot (dog_h)
 heat_dog_h <- plot_core(dog_h, plot.type = "heatmap",
@@ -177,140 +176,191 @@ ggsave("heat_human_cd.png", plot = heat_hum_cd, width = 10, height = 5)
 
 
 
-#### Core Microbiomes ####
-dog_h.core <- core(dog_h, detection = 0, prevalence = 50/100)
-dog_ibd.core <- core(dog_ibd, detection = 0, prevalence = 50/100)
-hum_h.core <- core(hum_h, detection = 0, prevalence = 50/100)
-hum_ibd.core <- core(hum_ibd, detection = 0, prevalence = 50/100)
-hum_uc.core <- core(hum_uc, detection = 0, prevalence = 50/100)
-hum_cd.core <- core(hum_cd, detection = 0, prevalence = 50/100)
+#### Heatmap Names ####
 
+# Sort taxa names from the AVS in the plot
+heat_dog_h.df <- heat_dog_h$data
+heat_dog_h.list <- heat_dog_h.df$Taxa
 
+heat_dog_ibd.df <- heat_dog_ibd$data
+heat_dog_ibd.list <- heat_dog_ibd.df$Taxa
 
-                  ##### Changing otu to taxonomy (not successful) ####
-                  
-                  # Sort taxa names
-                  dog_h.df <- heat_dog_h$data
-                  dog_h.list <- dog_h.df$Taxa
-                  
-                  dog_ibd.df <- heat_dog_ibd$data
-                  dog_ibd.list <- dog_ibd.df$Taxa
-                  
-                  hum_h.df <- heat_hum_h$data
-                  hum_h.list <- hum_h.df$Taxa
-                  
-                  hum_ibd.df <- heat_hum_ibd$data
-                  hum_ibd.list <- hum_ibd.df$Taxa
-                  
-                  hum_uc.df <- heat_hum_uc$data
-                  hum_uc.list <- hum_uc.df$Taxa
-                  
-                  hum_cd.df <- heat_hum_cd$data
-                  hum_cd.list <- hum_cd.df$Taxa
-                  
-                  # Check the OTU ids
-                  print(dog_h.list)
-                  print(dog_ibd.list)
-                  print(hum_h.list)
-                  print(hum_ibd.list)
-                  print(hum_uc.list)
-                  print(hum_cd.list)
-                  
-                  #get the taxonomy data
-                  dog_h.tax <- tax_table(dog_h.core)
-                  dog_h.tax <- as.data.frame(dog_h.tax)
-                  
-                  dog_ibd.tax <- tax_table(dog_ibd.core)
-                  dog_ibd.tax <- as.data.frame(dog_ibd.tax)
-                  
-                  hum_h.tax <- tax_table(hum_h.core)
-                  hum_h.tax <- as.data.frame(hum_h.tax)
-                  
-                  hum_ibd.tax <- tax_table(hum_ibd.core)
-                  hum_ibd.tax <- as.data.frame(hum_ibd.tax)
-                  
-                  hum_uc.tax <- tax_table(hum_uc.core)
-                  hum_uc.tax <- as.data.frame(hum_uc.tax)
-                  
-                  hum_cd.tax <- tax_table(hum_cd.core)
-                  hum_cd.tax <- as.data.frame(hum_cd.tax)
-                  
-                  # Add the OTUs to last column
-                  dog_h.tax$OTU <- rownames(dog_h.tax)
-                  dog_ibd.tax$OTU <- rownames(dog_ibd.tax)
-                  hum_h.tax$OTU <- rownames(hum_h.tax)
-                  hum_ibd.tax$OTU <- rownames(hum_ibd.tax)
-                  hum_uc.tax$OTU <- rownames(hum_uc.tax)
-                  hum_cd.tax$OTU <- rownames(hum_cd.tax)
-                  
-                  # Select taxonomy of only those OTUs that are used in the plot
-                  dog_h.tax2 <- dplyr::filter(dog_h.tax, rownames(dog_h.tax) %in% dog_h.list)
-                  dog_ibd.tax2 <- dplyr::filter(dog_ibd.tax, rownames(dog_ibd.tax) %in% dog_ibd.list)
-                  hum_h.tax2 <- dplyr::filter(hum_h.tax, rownames(hum_h.tax) %in% hum_h.list)
-                  hum_ibd.tax2 <- dplyr::filter(hum_ibd.tax, rownames(hum_ibd.tax) %in% hum_ibd.list)
-                  hum_uc.tax2 <- dplyr::filter(hum_uc.tax, rownames(hum_uc.tax) %in% hum_uc.list)
-                  hum_cd.tax2 <- dplyr::filter(hum_cd.tax, rownames(hum_cd.tax) %in% hum_cd.list)
-                  
-                  # Merge the taxa info
-                  dog_h.tax.unit <- tidyr::unite(dog_h.tax2, Taxa_level,c("Genus", "Species", "OTU"), sep = "_", remove = TRUE)
-                  dog_h.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", dog_h.tax.unit$Taxa_level)
-                  
-                  dog_ibd.tax.unit <- tidyr::unite(dog_ibd.tax2, Taxa_level,c("Genus", "Species", "OTU"), sep = "_", remove = TRUE)
-                  dog_ibd.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", dog_ibd.tax.unit$Taxa_level)
-                  
-                  hum_h.tax.unit <- tidyr::unite(hum_h.tax2, Taxa_level,c("Genus", "Species", "OTU"), sep = "_", remove = TRUE)
-                  hum_h.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", hum_h.tax.unit$Taxa_level)
-                  
-                  hum_ibd.tax.unit <- tidyr::unite(hum_ibd.tax2, Taxa_level,c("Genus", "Species", "OTU"), sep = "_", remove = TRUE)
-                  hum_ibd.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", hum_ibd.tax.unit$Taxa_level)
-                  
-                  hum_uc.tax.unit <- tidyr::unite(hum_uc.tax2, Taxa_level,c("Genus", "Species", "OTU"), sep = "_", remove = TRUE)
-                  hum_uc.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", hum_uc.tax.unit$Taxa_level)
-                  
-                  hum_cd.tax.unit <- tidyr::unite(hum_cd.tax2, Taxa_level,c("Genus", "Species", "OTU"), sep = "_", remove = TRUE)
-                  hum_cd.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", hum_cd.tax.unit$Taxa_level)
-                  
-                  
-                  #### Work on these !! ####
-                  
-                  # Add this new information into the plot data df
-                  dog_h.df$Taxa <- dog_h.tax.unit$Taxa_level
-                  dog_ibd.df$Taxa <- dog_ibd.tax.unit$Taxa_level
-                  hum_h.df$Taxa <- hum_h.tax.unit$Taxa_level
-                  hum_ibd.df$Taxa <- hum_ibd.tax.unit$Taxa_level
-                  hum_uc.df$Taxa <- hum_uc.tax.unit$Taxa_level
-                  hum_cd.df$Taxa <- hum_cd.tax.unit$Taxa_level
-                  
-                  view(hum_cd.df$Taxa)
-                  
-                  # Can now see we have the taxonomic information
-                  knitr::kable(head(df))
-                  
-                  view(dog_ibd.list)
+heat_hum_h.df <- heat_hum_h$data
+heat_hum_h.list <- heat_hum_h.df$Taxa
 
---------
+heat_hum_ibd.df <- heat_hum_ibd$data
+heat_hum_ibd.list <- heat_hum_ibd.df$Taxa
+
+heat_hum_uc.df <- heat_hum_uc$data
+heat_hum_uc.list <- heat_hum_uc.df$Taxa
+
+heat_hum_cd.df <- heat_hum_cd$data
+heat_hum_cd.list <- heat_hum_cd.df$Taxa
+
+# Check the ASV ids
+print(heat_dog_h.list)
+print(heat_dog_ibd.list)
+print(heat_hum_h.list)
+print(heat_hum_ibd.list)
+print(heat_hum_uc.list)
+print(heat_hum_cd.list)
+
+#  Get the taxonomy data from the phyloseq object that was used for the plot. Make sure to change this as you run the script for different phyloseq objects.
+dog_h.tax <- tax_table(dog_h)
+dog_h.tax <- as.data.frame(dog_h.tax)
+
+dog_ibd.tax <- tax_table(dog_ibd)
+dog_ibd.tax <- as.data.frame(dog_ibd.tax)
+
+hum_h.tax <- tax_table(hum_h)
+hum_h.tax <- as.data.frame(hum_h.tax)
+
+hum_ibd.tax <- tax_table(hum_ibd)
+hum_ibd.tax <- as.data.frame(hum_ibd.tax)
+
+hum_uc.tax <- tax_table(hum_uc)
+hum_uc.tax <- as.data.frame(hum_uc.tax)
+
+hum_cd.tax <- tax_table(hum_cd)
+hum_cd.tax <- as.data.frame(hum_cd.tax)
+
+# Add the ASVs to last column
+dog_h.tax$OTU <- rownames(dog_h.tax)
+dog_ibd.tax$OTU <- rownames(dog_ibd.tax)
+hum_h.tax$OTU <- rownames(hum_h.tax)
+hum_ibd.tax$OTU <- rownames(hum_ibd.tax)
+hum_uc.tax$OTU <- rownames(hum_uc.tax)
+hum_cd.tax$OTU <- rownames(hum_cd.tax)
+
+# Select taxonomy of only those ASVs that are used in the plot
+dog_h.tax2 <- dplyr::filter(dog_h.tax, rownames(dog_h.tax) %in% heat_dog_h.list)
+dog_ibd.tax2 <- dplyr::filter(dog_ibd.tax, rownames(dog_ibd.tax) %in% heat_dog_ibd.list)
+hum_h.tax2 <- dplyr::filter(hum_h.tax, rownames(hum_h.tax) %in% heat_hum_h.list)
+hum_ibd.tax2 <- dplyr::filter(hum_ibd.tax, rownames(hum_ibd.tax) %in% heat_hum_ibd.list)
+hum_uc.tax2 <- dplyr::filter(hum_uc.tax, rownames(hum_uc.tax) %in% heat_hum_uc.list)
+hum_cd.tax2 <- dplyr::filter(hum_cd.tax, rownames(hum_cd.tax) %in% heat_hum_cd.list)
+
+# Make a column with the information from Family and Genus together. This can be changed to look at other taxa levels like "Phylum"
+dog_h.tax.unit <- tidyr::unite(dog_h.tax2, Taxa_level,c("Family","Genus"), sep = "_;", remove = TRUE)
+dog_h.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", dog_h.tax.unit$Taxa_level)
+
+dog_ibd.tax.unit <- tidyr::unite(dog_ibd.tax2, Taxa_level,c("Family","Genus"), sep = "_;", remove = TRUE)
+dog_ibd.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", dog_ibd.tax.unit$Taxa_level)
+
+hum_h.tax.unit <- tidyr::unite(hum_h.tax2, Taxa_level,c("Family","Genus"), sep = "_;", remove = TRUE)
+hum_h.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", hum_h.tax.unit$Taxa_level)
+
+hum_ibd.tax.unit <- tidyr::unite(hum_ibd.tax2, Taxa_level,c("Family","Genus"), sep = "_;", remove = TRUE)
+hum_ibd.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", hum_ibd.tax.unit$Taxa_level)
+
+hum_uc.tax.unit <- tidyr::unite(hum_uc.tax2, Taxa_level,c("Family","Genus"), sep = "_;", remove = TRUE)
+hum_uc.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", hum_uc.tax.unit$Taxa_level)
+
+hum_cd.tax.unit <- tidyr::unite(hum_cd.tax2, Taxa_level,c("Family","Genus"), sep = "_;", remove = TRUE)
+hum_cd.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", hum_cd.tax.unit$Taxa_level)
+
+# Now that we have the real names for the ASVs, put this information back into the plot 
+heat_dog_h.df$Taxa <- dog_h.tax.unit$Taxa_level
+heat_dog_h.df$DetectionThreshold = as.numeric(heat_dog_h.df$DetectionThreshold)*10
+heat_dog_h$data <- heat_dog_h.df
+
+heat_dog_ibd.df$Taxa <- dog_ibd.tax.unit$Taxa_level
+heat_dog_ibd.df$DetectionThreshold = as.numeric(heat_dog_ibd.df$DetectionThreshold)*10
+heat_dog_ibd$data <- heat_dog_ibd.df
+
+heat_hum_h.df$Taxa <- hum_h.tax.unit$Taxa_level
+heat_hum_h.df$DetectionThreshold = as.numeric(heat_hum_h.df$DetectionThreshold)*10
+heat_hum_h$data <- heat_hum_h.df
+
+heat_hum_ibd.df$Taxa <- hum_ibd.tax.unit$Taxa_level
+heat_hum_ibd.df$DetectionThreshold = as.numeric(heat_hum_ibd.df$DetectionThreshold)*10
+heat_hum_ibd$data <- heat_hum_ibd.df
+
+heat_hum_uc.df$Taxa <- hum_uc.tax.unit$Taxa_level
+heat_hum_uc.df$DetectionThreshold = as.numeric(heat_hum_uc.df$DetectionThreshold)*10
+heat_hum_uc$data <- heat_hum_uc.df
+
+heat_hum_cd.df$Taxa <- hum_cd.tax.unit$Taxa_level
+heat_hum_cd.df$DetectionThreshold = as.numeric(heat_hum_cd.df$DetectionThreshold)*10
+heat_hum_cd$data <- heat_hum_cd.df
+
+# This plot might look different to the original one because it is resolved to the genus level. This means that any ASV's that had an "NA" for the species name is removed. This is fine because we would remove NA's anyways if we were to look at the species level.
+tax.heat_dog_h <- ggplot(heat_dog_h.df, aes(x = DetectionThreshold, reorder(Taxa, Prevalence), fill=Prevalence))+
+  geom_tile()+
+  xlab("Relative Abundance (%)")+
+  scale_fill_gradientn(colours = rev(brewer.pal(5, "Spectral")))+
+  ylab("Genus")+
+  theme(axis.text.x = element_text(angle = -90))+
+  coord_fixed()
+ggsave("tax.heat_dog_h.png"
+       , tax.heat_dog_h
+       , height=8, width =12)
+
+tax.heat_dog_ibd <- ggplot(heat_dog_ibd.df, aes(x = DetectionThreshold, reorder(Taxa, Prevalence), fill=Prevalence))+
+  geom_tile()+
+  xlab("Relative Abundance (%)")+
+  scale_fill_gradientn(colours = rev(brewer.pal(5, "Spectral")))+
+  ylab("Genus")+
+  theme(axis.text.x = element_text(angle = -90))+
+  coord_fixed()
+ggsave("tax.heat_dog_ibd.png"
+       , tax.heat_dog_ibd
+       , height=8, width =12)
+
+tax.heat_hum_h <- ggplot(heat_hum_h.df, aes(x = DetectionThreshold, reorder(Taxa, Prevalence), fill=Prevalence))+
+  geom_tile()+
+  xlab("Relative Abundance (%)")+
+  scale_fill_gradientn(colours = rev(brewer.pal(5, "Spectral")))+
+  ylab("Genus")+
+  theme(axis.text.x = element_text(angle = -90))+
+  coord_fixed()
+ggsave("tax.heat_hum_h.png"
+       , tax.heat_hum_h
+       , height=8, width =12)
+
+tax.heat_hum_ibd <- ggplot(heat_hum_ibd.df, aes(x = DetectionThreshold, reorder(Taxa, Prevalence), fill=Prevalence))+
+  geom_tile()+
+  xlab("Relative Abundance (%)")+
+  scale_fill_gradientn(colours = rev(brewer.pal(5, "Spectral")))+
+  ylab("Genus")+
+  theme(axis.text.x = element_text(angle = -90))+
+  coord_fixed()
+ggsave("tax.heat_hum_ibd.png"
+       , tax.heat_hum_ibd
+       , height=8, width =12)
+
+tax.heat_hum_uc <- ggplot(heat_hum_uc.df, aes(x = DetectionThreshold, reorder(Taxa, Prevalence), fill=Prevalence))+
+  geom_tile()+
+  xlab("Relative Abundance (%)")+
+  scale_fill_gradientn(colours = rev(brewer.pal(5, "Spectral")))+
+  ylab("Genus")+
+  theme(axis.text.x = element_text(angle = -90))+
+  coord_fixed()
+ggsave("tax.heat_hum_uc.png"
+       , tax.heat_hum_uc
+       , height=8, width =12)
+
+tax.heat_hum_cd <- ggplot(heat_hum_cd.df, aes(x = DetectionThreshold, reorder(Taxa, Prevalence), fill=Prevalence))+
+  geom_tile()+
+  xlab("Relative Abundance (%)")+
+  scale_fill_gradientn(colours = rev(brewer.pal(5, "Spectral")))+
+  ylab("Genus")+
+  theme(axis.text.x = element_text(angle = -90))+
+  coord_fixed()
+ggsave("tax.heat_hum_cd.png"
+       , tax.heat_hum_cd
+       , height=8, width =12)
 
 #### Comparing Core Microbiomes ####
 
 #  Core Members
-dog_h.corem <- core_members(dog_h, detection=0, prevalence = 0.50)
-view(tax_table(prune_taxa(dog_h.corem,ibd_final)))
-                  
-dog_ibd.corem <- core_members(dog_ibd, detection=0, prevalence = 0.50)
-view(tax_table(prune_taxa(dog_ibd.corem,ibd_final)))
-
-hum_h.corem <- core_members(hum_h, detection=0, prevalence = 0.50)
-view(tax_table(prune_taxa(hum_h.corem,ibd_final)))
-
-hum_ibd.corem <- core_members(hum_ibd, detection=0, prevalence = 0.50)
-view(tax_table(prune_taxa(hum_ibd.corem,ibd_final)))
-
-hum_uc.corem <- core_members(hum_uc, detection=0, prevalence = 0.50)
-view(tax_table(prune_taxa(hum_uc.corem,ibd_final)))
-
-hum_cd.corem <- core_members(hum_cd, detection=0, prevalence = 0.50)
-view(tax_table(prune_taxa(hum_cd.corem,ibd_final)))
-
+dog_h.corem <- unique(c(dog_h.tax.unit$Taxa_level))
+dog_ibd.corem <- unique(c(dog_ibd.tax.unit$Taxa_level))
+hum_h.corem <- unique(c(hum_h.tax.unit$Taxa_level))
+hum_ibd.corem <- unique(c(hum_ibd.tax.unit$Taxa_level))
+hum_uc.corem <- unique(c(hum_uc.tax.unit$Taxa_level))
+hum_cd.corem <- unique(c(hum_cd.tax.unit$Taxa_level))
+                      
 
 #### Venn Diagrams ####
 
@@ -318,6 +368,7 @@ view(tax_table(prune_taxa(hum_cd.corem,ibd_final)))
 dogh_dogibd_list <- list("Healthy [Dog]" = dog_h.corem, "IBD [Dog]" = dog_ibd.corem)
 dogh_dogibd_venn <- ggVennDiagram(x = dogh_dogibd_list)
 ggsave("dogh_dogibd_venn.png", dogh_dogibd_venn)
+
 
 # Human H vs Human IBD
 humh_humibd_list <- list("Healthy [Human]" = hum_h.corem, "IBD [Human]" = hum_ibd.corem)
