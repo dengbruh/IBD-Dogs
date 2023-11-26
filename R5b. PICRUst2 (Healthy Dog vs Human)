@@ -79,7 +79,7 @@ metacyc_daa_annotated_results_df <- pathway_annotation(pathway = "MetaCyc", daa_
 # Generate pathway heatmap
 # Please change column_to_rownames() to the feature column if you are not using example dataset
 # Please change group to "your_group_column" if you are not using example dataset
-feature_with_p_0.05 <- metacyc_daa_annotated_results_df %>% filter(p_adjust < 0.05)
+feature_with_p_0.05 <- metacyc_daa_annotated_results_df %>% filter(p_adjust < 0.01)
 
 picrust2_pathway_heatmap_healthy <- pathway_heatmap(
   abundance = abundance_data_filtered %>%
@@ -127,3 +127,6 @@ colnames(abundance_healthy_deseq)[106] <- "pathway"
     
 healthy_res =  DEseq2_function(abundance_data_filtered,healthy_only_metadata)
 View(healthy_res)
+
+write.csv(healthy_res,"healthy.csv")
+write.csv(metacyc_daa_annotated_results_df, "annotated.csv")
