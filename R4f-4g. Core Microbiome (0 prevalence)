@@ -419,3 +419,19 @@ ggsave("dogibd_humuc_venn.png", dogibd_humuc_venn)
 dogibd_humcd_list <- list("IBD [Dog]" = dog_ibd.corem, "CD [Human]" = hum_cd.corem)
 dogibd_humcd_venn <- ggVennDiagram(x = dogibd_humcd_list)
 ggsave("dogibd_humcd_venn.png", dogibd_humcd_venn)
+
+
+
+#### Venn Tables ####
+
+# Dog IBD vs Human IBD
+dogibd_humibd_intersect <- intersect(dog_ibd.corem, hum_ibd.corem)
+
+# Dog IBD vs Human UC
+dogibd_humuc_intersect <- intersect(dog_ibd.corem, hum_uc.corem)
+
+# Dog IBD vs Human CD
+dogibd_humcd_intersect <- intersect(dog_ibd.corem, hum_cd.corem)
+
+# Dog IBD vs Human UC vs Human CD
+dogibd_humuc_humcd_list <- intersect(dogibd_humuc_intersect, dogibd_humcd_intersect)
