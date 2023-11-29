@@ -77,11 +77,11 @@ for (i in vars){
 
 data_rel_filter <- data_rel %>% filter(legend != "acute_hem_diarrhea")
 
-taxabarplot_labels <- c("healthy" = "Healthy Dogs", 
-                        "IBD" = "IBD Dogs", 
-                        "Ulcerative Colitis" = "UC Humans",
-                        "Crohn's Disease" = "CD Humans",
-                        "Control" = "Healthy Humans")
+taxabarplot_labels <- c("healthy" = "Dog Healthy", 
+                        "IBD" = "Dog IBD", 
+                        "Ulcerative Colitis" = "Human Ulcerative Colitis",
+                        "Crohn's Disease" = "Human Crohn's Disease",
+                        "Control" = "Human Healthy")
 
 taxabarplot <- ggplot(data = data_rel_filter, aes(legend,rel_abs, fill = Phylum)) +
   geom_col(color = "black") +
@@ -91,3 +91,4 @@ taxabarplot <- ggplot(data = data_rel_filter, aes(legend,rel_abs, fill = Phylum)
   scale_x_discrete(labels = taxabarplot_labels)
 
 ggsave("taxabarplot.png", plot = taxabarplot, height=4, width=10)
+
