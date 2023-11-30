@@ -6,12 +6,15 @@
 # Download Packages
 install.packages("RColorBrewer")
 install.packages("reshape2")
+if (!require(devtools)) install.packages("devtools")
+devtools::install_github("yanlinlin82/ggvenn")
 
 # Load Packages
 library(tidyverse)
 library(phyloseq)
 library(microbiome)
 library(ggVennDiagram)
+library(ggvenn)
 library(RColorBrewer)
 library(reshape2)
 library(ggplot2)
@@ -70,10 +73,10 @@ heat_dog_h <- plot_core(dog_h, plot.type = "heatmap",
           prevalences = prevalences,
           detections = det,
           colours = rev(brewer.pal(5, "RdBu")),
-          min.prevalence = .5,
+          min.prevalence = .25,
           horizontal = TRUE) +
-  xlab("Detection Threshold \n (Relative Abundance %)") +
-  ggtitle("Dogs - Healthy") +
+  xlab("Detection Threshold \n (Relative Abundance)") +
+  ggtitle("Healthy Dogs") +
   theme(axis.text.x = element_text(size=8, face="italic", hjust=1),
         axis.text.y = element_text(size=8),
         axis.title = element_text(size=10),
@@ -89,10 +92,10 @@ heat_dog_ibd <- plot_core(dog_ibd, plot.type = "heatmap",
                         prevalences = prevalences,
                         detections = det,
                         colours = rev(brewer.pal(5, "RdBu")),
-                        min.prevalence = .5,
+                        min.prevalence = .25,
                         horizontal = TRUE) +
-  xlab("Detection Threshold \n (Relative Abundance %)") +
-  ggtitle("Dogs - IBD") +
+  xlab("Detection Threshold \n (Relative Abundance)") +
+  ggtitle("IBD Dogs") +
   theme(axis.text.x = element_text(size=8, face="italic", hjust=1),
         axis.text.y = element_text(size=8),
         axis.title = element_text(size=10),
@@ -107,10 +110,10 @@ heat_hum_h <- plot_core(hum_h, plot.type = "heatmap",
                         prevalences = prevalences,
                         detections = det,
                         colours = rev(brewer.pal(5, "RdBu")),
-                        min.prevalence = .5,
+                        min.prevalence = .25,
                         horizontal = TRUE) +
-  xlab("Detection Threshold \n (Relative Abundance %)") +
-  ggtitle("Humans - Healthy") +
+  xlab("Detection Threshold \n (Relative Abundance)") +
+  ggtitle("Healthy Humans") +
   theme(axis.text.x = element_text(size=8, face="italic", hjust=1),
         axis.text.y = element_text(size=8),
         axis.title = element_text(size=10),
@@ -125,10 +128,10 @@ heat_hum_ibd <- plot_core(hum_ibd, plot.type = "heatmap",
                         prevalences = prevalences,
                         detections = det,
                         colours = rev(brewer.pal(5, "RdBu")),
-                        min.prevalence = .5,
+                        min.prevalence = .25,
                         horizontal = TRUE) +
-  xlab("Detection Threshold \n (Relative Abundance %)") +
-  ggtitle("Humans - IBD") +
+  xlab("Detection Threshold \n (Relative Abundance)") +
+  ggtitle("IBD Humans") +
   theme(axis.text.x = element_text(size=8, face="italic", hjust=1),
         axis.text.y = element_text(size=8),
         axis.title = element_text(size=10),
@@ -143,10 +146,10 @@ heat_hum_uc <- plot_core(hum_uc, plot.type = "heatmap",
                         prevalences = prevalences,
                         detections = det,
                         colours = rev(brewer.pal(5, "RdBu")),
-                        min.prevalence = .5,
+                        min.prevalence = .25,
                         horizontal = TRUE) +
-  xlab("Detection Threshold \n (Relative Abundance %)") +
-  ggtitle("Humans - Ulcerative Colitis") +
+  xlab("Detection Threshold \n (Relative Abundance)") +
+  ggtitle("Ulcerative Colitis Humans") +
   theme(axis.text.x = element_text(size=8, face="italic", hjust=1),
         axis.text.y = element_text(size=8),
         axis.title = element_text(size=10),
@@ -161,10 +164,10 @@ heat_hum_cd <- plot_core(hum_cd, plot.type = "heatmap",
                         prevalences = prevalences,
                         detections = det,
                         colours = rev(brewer.pal(5, "RdBu")),
-                        min.prevalence = .5,
+                        min.prevalence = .25,
                         horizontal = TRUE) +
-  xlab("Detection Threshold \n (Relative Abundance %)") +
-  ggtitle("Humans - Crohn's Disease") +
+  xlab("Detection Threshold \n (Relative Abundance)") +
+  ggtitle("Crohn's Disease Humans") +
   theme(axis.text.x = element_text(size=8, face="italic", hjust=1),
         axis.text.y = element_text(size=8),
         axis.title = element_text(size=10),
@@ -261,33 +264,27 @@ hum_cd.tax.unit$Taxa_level <- gsub(pattern="[a-z]__",replacement="", hum_cd.tax.
 
 # Now that we have the real names for the ASVs, put this information back into the plot 
 heat_dog_h.df$Taxa <- dog_h.tax.unit$Taxa_level
-heat_dog_h.df$DetectionThreshold = as.numeric(heat_dog_h.df$DetectionThreshold)*10
 heat_dog_h$data <- heat_dog_h.df
 
 heat_dog_ibd.df$Taxa <- dog_ibd.tax.unit$Taxa_level
-heat_dog_ibd.df$DetectionThreshold = as.numeric(heat_dog_ibd.df$DetectionThreshold)*10
 heat_dog_ibd$data <- heat_dog_ibd.df
 
 heat_hum_h.df$Taxa <- hum_h.tax.unit$Taxa_level
-heat_hum_h.df$DetectionThreshold = as.numeric(heat_hum_h.df$DetectionThreshold)*10
 heat_hum_h$data <- heat_hum_h.df
 
 heat_hum_ibd.df$Taxa <- hum_ibd.tax.unit$Taxa_level
-heat_hum_ibd.df$DetectionThreshold = as.numeric(heat_hum_ibd.df$DetectionThreshold)*10
 heat_hum_ibd$data <- heat_hum_ibd.df
 
 heat_hum_uc.df$Taxa <- hum_uc.tax.unit$Taxa_level
-heat_hum_uc.df$DetectionThreshold = as.numeric(heat_hum_uc.df$DetectionThreshold)*10
 heat_hum_uc$data <- heat_hum_uc.df
 
 heat_hum_cd.df$Taxa <- hum_cd.tax.unit$Taxa_level
-heat_hum_cd.df$DetectionThreshold = as.numeric(heat_hum_cd.df$DetectionThreshold)*10
 heat_hum_cd$data <- heat_hum_cd.df
 
 # This plot might look different to the original one because it is resolved to the genus level. This means that any ASV's that had an "NA" for the species name is removed. This is fine because we would remove NA's anyways if we were to look at the species level.
 tax.heat_dog_h <- ggplot(heat_dog_h.df, aes(x = DetectionThreshold, reorder(Taxa, Prevalence), fill=Prevalence))+
   geom_tile()+
-  xlab("Relative Abundance (%)")+
+  xlab("Relative Abundance")+
   scale_fill_gradientn(colours = rev(brewer.pal(5, "Spectral")))+
   ylab("Genus")+
   theme(axis.text.x = element_text(angle = -90))+
@@ -298,7 +295,7 @@ ggsave("tax.heat_dog_h.png"
 
 tax.heat_dog_ibd <- ggplot(heat_dog_ibd.df, aes(x = DetectionThreshold, reorder(Taxa, Prevalence), fill=Prevalence))+
   geom_tile()+
-  xlab("Relative Abundance (%)")+
+  xlab("Relative Abundance")+
   scale_fill_gradientn(colours = rev(brewer.pal(5, "Spectral")))+
   ylab("Genus")+
   theme(axis.text.x = element_text(angle = -90))+
@@ -309,7 +306,7 @@ ggsave("tax.heat_dog_ibd.png"
 
 tax.heat_hum_h <- ggplot(heat_hum_h.df, aes(x = DetectionThreshold, reorder(Taxa, Prevalence), fill=Prevalence))+
   geom_tile()+
-  xlab("Relative Abundance (%)")+
+  xlab("Relative Abundance")+
   scale_fill_gradientn(colours = rev(brewer.pal(5, "Spectral")))+
   ylab("Genus")+
   theme(axis.text.x = element_text(angle = -90))+
@@ -320,7 +317,7 @@ ggsave("tax.heat_hum_h.png"
 
 tax.heat_hum_ibd <- ggplot(heat_hum_ibd.df, aes(x = DetectionThreshold, reorder(Taxa, Prevalence), fill=Prevalence))+
   geom_tile()+
-  xlab("Relative Abundance (%)")+
+  xlab("Relative Abundance")+
   scale_fill_gradientn(colours = rev(brewer.pal(5, "Spectral")))+
   ylab("Genus")+
   theme(axis.text.x = element_text(angle = -90))+
@@ -331,7 +328,7 @@ ggsave("tax.heat_hum_ibd.png"
 
 tax.heat_hum_uc <- ggplot(heat_hum_uc.df, aes(x = DetectionThreshold, reorder(Taxa, Prevalence), fill=Prevalence))+
   geom_tile()+
-  xlab("Relative Abundance (%)")+
+  xlab("Relative Abundance")+
   scale_fill_gradientn(colours = rev(brewer.pal(5, "Spectral")))+
   ylab("Genus")+
   theme(axis.text.x = element_text(angle = -90))+
@@ -342,7 +339,7 @@ ggsave("tax.heat_hum_uc.png"
 
 tax.heat_hum_cd <- ggplot(heat_hum_cd.df, aes(x = DetectionThreshold, reorder(Taxa, Prevalence), fill=Prevalence))+
   geom_tile()+
-  xlab("Relative Abundance (%)")+
+  xlab("Relative Abundance")+
   scale_fill_gradientn(colours = rev(brewer.pal(5, "Spectral")))+
   ylab("Genus")+
   theme(axis.text.x = element_text(angle = -90))+
@@ -365,57 +362,79 @@ hum_cd.corem <- unique(c(hum_cd.tax.unit$Taxa_level))
 #### Venn Diagrams ####
 
 # Dog H vs Dog IBD
-dogh_dogibd_list <- list("Healthy [Dog]" = dog_h.corem, "IBD [Dog]" = dog_ibd.corem)
-dogh_dogibd_venn <- ggVennDiagram(x = dogh_dogibd_list)
+dogh_dogibd_list <- list("Healthy Dogs" = dog_h.corem, "IBD Dogs" = dog_ibd.corem)
+dogh_dogibd_venn <- ggvenn(dogh_dogibd_list,
+                           fill_color = c("#00C000FF", "#FF2000FF"),
+                           stroke_size = 0.5, set_name_size = 5)
 ggsave("dogh_dogibd_venn.png", dogh_dogibd_venn)
 
 
 # Human H vs Human IBD
-humh_humibd_list <- list("Healthy [Human]" = hum_h.corem, "IBD [Human]" = hum_ibd.corem)
-humh_humibd_venn <- ggVennDiagram(x = humh_humibd_list)
+humh_humibd_list <- list("Healthy Humans" = hum_h.corem, "IBD Humans" = hum_ibd.corem)
+humh_humibd_venn <- ggvenn(humh_humibd_list,
+                           fill_color = c("#00C000FF", "#FF2000FF"),
+                           stroke_size = 0.5, set_name_size = 5)
 ggsave("humh_humibd_venn.png", humh_humibd_venn)
 
 # Humam H vs Human UC vs Human CD
-humh_humuc_humcd_list <- list("UC \n [Human]" = hum_uc.corem, "Healthy [Human]" = hum_h.corem, "CD \n [Human]" = hum_cd.corem)
-humh_humuc_humcd_venn <- ggVennDiagram(x = humh_humuc_humcd_list)
+humh_humuc_humcd_list <- list("Ulcerative Colitis Humans     " = hum_uc.corem, "     Crohn's Disease Humans" = hum_cd.corem, "Healthy Humans" = hum_h.corem)
+humh_humuc_humcd_venn <- ggvenn(humh_humuc_humcd_list,
+                                fill_color = c("#0073C2FF", "#EFC000FF", "#00C000FF"),
+                                stroke_size = 0.5, set_name_size = 5)
 ggsave("humh_humuc_humcd_venn.png", humh_humuc_humcd_venn)
 
 # Human H vs Human UC
-humh_humuc_list <- list("Healthy [Human]" = hum_h.corem, "UC [Human]" = hum_uc.corem)
-humh_humuc_venn <- ggVennDiagram(x = humh_humuc_list)
+humh_humuc_list <- list("Healthy Humans" = hum_h.corem, "Ulcerative Colitis Humans" = hum_uc.corem)
+humh_humuc_venn <- ggvenn(humh_humuc_list,
+                          fill_color = c("#00C000FF", "#0073C2FF"),
+                          stroke_size = 0.5, set_name_size = 5)
 ggsave("humh_humuc_venn.png", humh_humuc_venn)
 
 # Human H vs Human CD
-humh_humcd_list <- list("Healthy [Human]" = hum_h.corem, "CD [Human]" = hum_cd.corem)
-humh_humcd_venn <- ggVennDiagram(x = humh_humcd_list)
+humh_humcd_list <- list("Healthy Humans" = hum_h.corem, "Crohn's Disease Humans" = hum_cd.corem)
+humh_humcd_venn <- ggvenn(humh_humcd_list,
+                          fill_color = c("#00C000FF", "#EFC000FF"),
+                          stroke_size = 0.5, set_name_size = 5)
 ggsave("humh_humcd_venn.png", humh_humcd_venn)
 
 # Human UC vs Human CD
-humuc_humcd_list <- list("UC [Human]" = hum_uc.corem, "CD [Human]" = hum_cd.corem)
-humuc_humcd_venn <- ggVennDiagram(x = humuc_humcd_list)
+humuc_humcd_list <- list("Ulcerative Colitis Humans" = hum_uc.corem, "Crohn's Disease Humans" = hum_cd.corem)
+humuc_humcd_venn <- ggvenn(humuc_humcd_list,
+                           fill_color = c("#0073C2FF", "#EFC000FF"),
+                           stroke_size = 0.5, set_name_size = 5)
 ggsave("humuc_humcd_venn.png", humuc_humcd_venn)
 
 # Dog H  vs Human H
-dogh_humh_list <- list("Healthy [Dog]" = dog_h.corem, "Healthy [Human]" = hum_h.corem)
-dogh_humh_venn <- ggVennDiagram(x = dogh_humh_list)
+dogh_humh_list <- list("Healthy Dogs" = dog_h.corem, "Healthy Humans" = hum_h.corem)
+dogh_humh_venn <- ggvenn(dogh_humh_list,
+                         fill_color = c("#00C000FF", "#00C000FF"),
+                         stroke_size = 0.5, set_name_size = 5)
 ggsave("dogh_humh_venn.png", dogh_humh_venn)
 
 # Dog IBD vs Human IBD
-dogibd_humibd_list <- list("IBD [Dog]" = dog_ibd.corem, "IBD [Human]" = hum_ibd.corem)
-dogibd_humibd_venn <- ggVennDiagram(x = dogibd_humibd_list)
+dogibd_humibd_list <- list("IBD Dogs" = dog_ibd.corem, "IBD Humans" = hum_ibd.corem)
+dogibd_humibd_venn <- ggvenn(dogibd_humibd_list,
+                             fill_color = c("#FF2000FF", "#FF2000FF"),
+                             stroke_size = 0.5, set_name_size = 5)
 ggsave("dogibd_humibd_venn.png", dogibd_humibd_venn)
 
 # Dog IBD vs Human UC vs Human CD
-dogibd_humuc_humcd_list <- list("UC \n [Human]" = hum_uc.corem, "IBD [Dog]" = dog_ibd.corem, "CD \n [Human]" = hum_cd.corem)
-dogibd_humuc_humcd_venn <- ggVennDiagram(x = dogibd_humuc_humcd_list)
+dogibd_humuc_humcd_list <- list("Ulcerative Colitis Humans    " = hum_uc.corem, "    Crohn's Disease Humans" = hum_cd.corem, "IBD Dogs" = dog_ibd.corem)
+dogibd_humuc_humcd_venn <- ggvenn(dogibd_humuc_humcd_list,
+                                  fill_color = c("#0073C2FF", "#EFC000FF", "#FF2000FF"),
+                                  stroke_size = 0.5, set_name_size = 5)
 ggsave("dogibd_humuc_humcd_venn.png", dogibd_humuc_humcd_venn)
 
 # Dog IBD vs Human UC
-dogibd_humuc_list <- list("IBD [Dog]" = dog_ibd.corem, "UC [Human]" = hum_uc.corem)
-dogibd_humuc_venn <- ggVennDiagram(x = dogibd_humuc_list)
+dogibd_humuc_list <- list("IBD Dogs" = dog_ibd.corem, "Ulcerative Colitis Humans" = hum_uc.corem)
+dogibd_humuc_venn <- ggvenn(dogibd_humuc_list,
+                            fill_color = c("#FF2000FF", "#0073C2FF"),
+                            stroke_size = 0.5, set_name_size = 5)
 ggsave("dogibd_humuc_venn.png", dogibd_humuc_venn)
 
 # Dog IBD vs Human CD
-dogibd_humcd_list <- list("IBD [Dog]" = dog_ibd.corem, "CD [Human]" = hum_cd.corem)
-dogibd_humcd_venn <- ggVennDiagram(x = dogibd_humcd_list)
+dogibd_humcd_list <- list("IBD Dogs" = dog_ibd.corem, "Crohn's Disease Humans" = hum_cd.corem)
+dogibd_humcd_venn <- ggvenn(dogibd_humcd_list,
+                            fill_color = c("#FF2000FF", "#EFC000FF"),
+                            stroke_size = 0.5, set_name_size = 5)
 ggsave("dogibd_humcd_venn.png", dogibd_humcd_venn)
