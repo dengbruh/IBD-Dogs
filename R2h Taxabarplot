@@ -1,4 +1,5 @@
-#### 2023-11-28
+#### 2023-11-28 Wrote code
+#### 2023-11-30 Updated x-axes labels
 
 library(phyloseq) 
 library(tidyverse)
@@ -77,18 +78,19 @@ for (i in vars){
 
 data_rel_filter <- data_rel %>% filter(legend != "acute_hem_diarrhea")
 
-taxabarplot_labels <- c("healthy" = "Dog Healthy", 
-                        "IBD" = "Dog IBD", 
-                        "Ulcerative Colitis" = "Human Ulcerative Colitis",
-                        "Crohn's Disease" = "Human Crohn's Disease",
-                        "Control" = "Human Healthy")
+taxabarplot_labels <- c("healthy" = "Healthy Dogs", 
+                        "IBD" = "IBD Dogs", 
+                        "Ulcerative Colitis" = "Ulcerative Colitis Humans",
+                        "Crohn's Disease" = "Crohn's Disease Humans",
+                        "Control" = "Healthy Humans")
 
 taxabarplot <- ggplot(data = data_rel_filter, aes(legend,rel_abs, fill = Phylum)) +
   geom_col(color = "black") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme(axis.text = element_text(size = 10, face = "bold"),
+        legend.text =  element_text(size = 8, face = "bold"),
+        axis.text.x = element_text(angle = -45),
+        axis.title.x = element_text(margin = margin(t = 20))) +
   labs(y = "Relative abundance", x = "Disease Severity") +
-  theme_classic() +
   scale_x_discrete(labels = taxabarplot_labels)
 
-ggsave("taxabarplot.png", plot = taxabarplot, height=4, width=10)
-
+ggsave("taxabarplot.png", plot = taxabarplot, height=8, width=15)
