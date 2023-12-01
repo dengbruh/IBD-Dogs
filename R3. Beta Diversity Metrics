@@ -13,7 +13,7 @@ load("ibd_final.RData")
 ?distance
 
 #### Creating new column in metadata to compile both species and disease state ####
-sample_data(ibd_rare)[[38]] = paste(sample_data(ibd_rare)[[10]],sample_data(ibd_rare)[[15]])
+sample_data(ibd_rare)[[38]] = paste(sample_data(ibd_rare)[[15]],sample_data(ibd_rare)[[10]])
 
 #### Extracting information for statistical tests ####
 alphadiv <- estimate_richness(ibd_rare)
@@ -22,7 +22,7 @@ samp_dat_wdiv <- data.frame(samp_dat, alphadiv)
 
 #### Coloring based on species and disease state"
 allGroupsColors <- c(
-  "#F8766D", "#00BF7D", "#00B0F6", "#A3A500",
+  "#00B0F6", "#F8766D","#A3A500","#00BF7D",
   "#E76BF3")
   
 ##############################################################################
@@ -44,7 +44,7 @@ scale_color_manual(values = allGroupsColors) +
 beta_bray
 
 # Save Plot
-ggsave("beta_bray.png"
+ggsave("beta_bray_new.png"
        , beta_bray
        , height=4, width=5)
 
@@ -66,7 +66,7 @@ beta_unifrac <- plot_ordination(ibd_rare, pcoa_uf, color = "V38") +
 beta_unifrac
 
 # Save Plot
-ggsave("beta_unifrac.png"
+ggsave("beta_unifrac_new.png"
        , beta_unifrac
        , height=4, width=5)
 
@@ -88,7 +88,7 @@ beta_w_unifrac <- plot_ordination(ibd_rare, pcoa_wuf, color = "V38") +
 beta_w_unifrac
 
 # Save Plot
-ggsave("beta_weighted_unifrac.png"
+ggsave("beta_weighted_unifrac_new.png"
        , beta_w_unifrac
        , height=4, width=5)
 
@@ -110,6 +110,6 @@ beta_jacc <- plot_ordination(ibd_rare, pcoa_jacc, color = "V38") +
 beta_jacc
 
 # Save Plot
-ggsave("beta_jacc.png"
+ggsave("beta_jacc_new.png"
        , beta_jacc
        , height=4, width=5)

@@ -12,7 +12,7 @@ load("ibd_final.RData")
 
 
 #### Creating new column in metadata to compile both species and disease state ####
-sample_data(ibd_rare)[[38]] = paste(sample_data(ibd_rare)[[10]],sample_data(ibd_rare)[[15]])
+sample_data(ibd_rare)[[38]] = paste(sample_data(ibd_rare)[[15]],sample_data(ibd_rare)[[10]])
 
 
 #### Extracting information for statistical tests ####
@@ -31,22 +31,27 @@ TukeyHSD(aov(shannon_species_disease))
 # Creating the initial box plot #
 alpha_shannon <- samp_dat_wdiv %>%
   mutate(V38 = fct_relevel(V38, 
-                            "Dog Healthy", "Human Healthy", "Dog IBD", 
-                            "Human Crohn's Disease", "Human Ulcerative Colitis")) %>%
+                            "Healthy Dog", "Healthy Human", "IBD Dog", 
+                            "Crohn's Disease Human", "Ulcerative Colitis Human")) %>%
   ggplot(aes(x=`V38`, y=Shannon, fill = V38)) +
+  theme(axis.text.x = element_text(size = 14, angle = -30, hjust = 0)) +
+  theme(axis.text.y = element_text(size = 14)) +
   geom_boxplot() +
-  geom_signif(comparisons = list(c("Dog Healthy","Human Healthy"),c("Dog IBD","Human Crohn's Disease"), c("Dog IBD", "Human Ulcerative Colitis")),
-              y_position = c(4.2, 4.5, 4.7),
+  geom_signif(comparisons = list(c("Healthy Dog","Healthy Human"),c("IBD Dog","Crohn's Disease Human"), c("IBD Dog", "Ulcerative Colitis Human")),
+              y_position = c(4, 3.5, 4),
+              textsize = 6,
               annotations = c("****","*","****")) +
   ylab("Shannon Diversity") +
-  xlab("Species and Disease State")
+  xlab("Species and Disease State") +
+  theme(axis.title.x = element_text(size = 16, face = "bold")) +
+  theme(axis.title.y = element_text(size = 16, face = "bold"))
 
 alpha_shannon <- alpha_shannon + guides(fill=guide_legend(title="Species and Disease State"))
 
 # Save plot
-ggsave(filename = "alpha_shannon.png"
+ggsave(filename = "alpha_shannon_new.png"
        , alpha_shannon
-       , height=6, width=10)
+       , height=8, width=8)
 
 ##############################################################################
 #### Alpha diversity - Observered ######
@@ -58,24 +63,29 @@ TukeyHSD(aov(observed_species_disease))
 # Creating the initial box plot #
 alpha_observed <- samp_dat_wdiv %>%
   mutate(V38 = fct_relevel(V38, 
-                           "Dog Healthy", "Human Healthy", "Dog IBD", 
-                           "Human Crohn's Disease", "Human Ulcerative Colitis")) %>%
+                           "Healthy Dog", "Healthy Human", "IBD Dog", 
+                           "Crohn's Disease Human", "Ulcerative Colitis Human")) %>%
   ggplot(aes(x=`V38`, y=Observed, fill = V38)) +
+  theme(axis.text.x = element_text(size = 14, angle = -30, hjust = 0)) +
+  theme(axis.text.y = element_text(size = 14)) +
   geom_boxplot() +
-  geom_signif(comparisons = list(c("Dog Healthy","Human Healthy"),c("Dog IBD","Human Crohn's Disease"), c("Dog IBD", "Human Ulcerative Colitis")),
+  geom_signif(comparisons = list(c("Healthy Dog","Healthy Human"),c("IBD Dog","Crohn's Disease Human"), c("IBD Dog", "Ulcerative Colitis Human")),
               y_position = c(150, 180, 200),
+              textsize = 6,
               annotations = c("****","****","****")) +
-  ylab("Observed Features") +
-  xlab("Species and Disease State")
+  ylab("Richness") +
+  xlab("Species and Disease State") +
+  theme(axis.title.x = element_text(size = 16, face = "bold")) +
+  theme(axis.title.y = element_text(size = 16, face = "bold"))
 
 alpha_observed <- alpha_observed + guides(fill=guide_legend(title="Species and Disease State"))
 
 alpha_observed
 
 # Save plot
-ggsave(filename = "alpha_observed.png"
+ggsave(filename = "alpha_observed_new.png"
        , alpha_observed
-       , height=6, width=10)
+       , height=8, width=8)
 
 ##############################################################################
 #### Alpha diversity - Faith's PD #####
@@ -95,24 +105,29 @@ TukeyHSD(aov(faith_species_disease))
 # Plot any metadata category against the PD
 plot.pd <- samp_dat_wfaith %>%
   mutate(V38 = fct_relevel(V38, 
-                           "Dog Healthy", "Human Healthy", "Dog IBD", 
-                           "Human Crohn's Disease", "Human Ulcerative Colitis")) %>%
+                           "Healthy Dog", "Healthy Human", "IBD Dog", 
+                           "Crohn's Disease Human", "Ulcerative Colitis Human")) %>%
   ggplot(aes(x=`V38`, y=`PD`, fill = V38)) +
+  theme(axis.text.x = element_text(size = 14, angle = -30, hjust = 0)) +
+  theme(axis.text.y = element_text(size = 14)) +
   geom_boxplot() +
-  geom_signif(comparisons = list(c("Dog Healthy","Human Healthy"),c("Dog IBD","Human Crohn's Disease"), c("Dog IBD", "Human Ulcerative Colitis")),
+  geom_signif(comparisons = list(c("Healthy Dog","Healthy Human"),c("IBD Dog","Crohn's Disease Human"), c("IBD Dog", "Ulcerative Colitis Human")),
               y_position = c(15, 17, 19),
+              textsize = 6,
               annotations = c("****","****","****")) +
   ylab("Faith's Phylogenetic Distance") +
-  xlab("Species and Disease State")
+  xlab("Species and Disease State") +
+  theme(axis.title.x = element_text(size = 16, face = "bold")) +
+  theme(axis.title.y = element_text(size = 16, face = "bold"))
 
 plot.pd <- plot.pd + guides(fill=guide_legend(title="Species and Disease State"))
 
 plot.pd
 
 # Save plot
-ggsave(filename = "alpha_faith.png"
+ggsave(filename = "alpha_faith_new.png"
        , plot.pd
-       , height=6, width=10)
+       , height=8, width=8)
 
 ##############################################################################
 #### Alpha diversity - Simpson ######
@@ -124,24 +139,29 @@ TukeyHSD(aov(simpson_species_disease))
 # Creating the initial box plot #
 alpha_simpson <- samp_dat_wdiv %>%
   mutate(V38 = fct_relevel(V38, 
-                           "Dog Healthy", "Human Healthy", "Dog IBD", 
-                           "Human Crohn's Disease", "Human Ulcerative Colitis")) %>%
+                           "Healthy Dog", "Healthy Human", "IBD Dog", 
+                           "Crohn's Disease Human", "Ulcerative Colitis Human")) %>%
   ggplot(aes(x=`V38`, y=Simpson, fill = V38)) +
+  theme(axis.text.x = element_text(size = 14, angle = -30, hjust = 0)) +
+  theme(axis.text.y = element_text(size = 14)) +
   geom_boxplot() +
-  geom_signif(comparisons = list(c("Dog Healthy","Human Healthy"),c("Dog IBD","Human Crohn's Disease"), c("Dog IBD", "Human Ulcerative Colitis")),
+  geom_signif(comparisons = list(c("Healthy Dog","Healthy Human"),c("IBD Dog","Crohn's Disease Human"), c("IBD Dog", "Ulcerative Colitis Human")),
               y_position = c(1, 1.1, 1.2),
-              annotations = c("n.s.","n.s.","****")) +
+              textsize = 6,
+              annotations = c("n.s","n.s","****")) +
   ylab("Simpson Index") +
-  xlab("Species and Disease State")
+  xlab("Species and Disease State") +
+  theme(axis.title.x = element_text(size = 16, face = "bold")) +
+  theme(axis.title.y = element_text(size = 16, face = "bold"))
 
 alpha_simpson <- alpha_simpson + guides(fill=guide_legend(title="Species and Disease State"))
 
 alpha_simpson
 
 # Save plot
-ggsave(filename = "alpha_simpson.png"
+ggsave(filename = "alpha_simpson_new.png"
        , alpha_simpson
-       , height=6, width=10)
+       , height=8, width=8)
 
 
 ##############################################################################
@@ -152,17 +172,22 @@ summary(aov(chao_species_disease))
 TukeyHSD(aov(chao_species_disease))
 
 # Creating the initial box plot #
-alpha_chao <- alpha_simpson <- samp_dat_wdiv %>%
+alpha_chao <- samp_dat_wdiv %>%
   mutate(V38 = fct_relevel(V38, 
-                           "Dog Healthy", "Human Healthy", "Dog IBD", 
-                           "Human Crohn's Disease", "Human Ulcerative Colitis")) %>%
+                           "Healthy Dog", "Healthy Human", "IBD Dog", 
+                           "Crohn's Disease Human", "Ulcerative Colitis Human")) %>%
   ggplot(aes(x=`V38`, y=Chao1, fill = V38)) +
+  theme(axis.text.x = element_text(size = 14, angle = -30, hjust = 0)) +
+  theme(axis.text.y = element_text(size = 14)) +
   geom_boxplot() +
-  geom_signif(comparisons = list(c("Dog Healthy","Human Healthy"),c("Dog IBD","Human Crohn's Disease"), c("Dog IBD", "Human Ulcerative Colitis")),
+  geom_signif(comparisons = list(c("Healthy Dog","Healthy Human"),c("IBD Dog","Crohn's Disease Human"), c("IBD Dog", "Ulcerative Colitis Human")),
               y_position = c(145, 155, 165),
+              textsize = 6,
               annotations = c("****","****","****")) +
   ylab("Chao Index") +
-  xlab("Species and Disease State")
+  xlab("Species and Disease State") +
+  theme(axis.title.x = element_text(size = 16, face = "bold")) +
+  theme(axis.title.y = element_text(size = 16, face = "bold"))
 
 alpha_chao <- alpha_chao + guides(fill=guide_legend(title="Species and Disease State"))
 
@@ -170,6 +195,6 @@ alpha_chao
 
 
 # Save plot
-ggsave(filename = "alpha_chao.png"
+ggsave(filename = "alpha_chao_new.png"
        , alpha_chao
-       , height=6, width=10)
+       , height=8, width=8)
