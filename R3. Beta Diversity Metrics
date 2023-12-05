@@ -37,6 +37,7 @@ adonis2(bc_dm ~ `Species` * `disease_stat`, data=samp_dat_wdiv)
 
 # Plotting PCoA plot
 beta_bray <- plot_ordination(ibd_rare, pcoa_bc, color = "V38") +
+  theme_bw() +
 scale_color_manual(values = allGroupsColors) +
   guides(color = guide_legend(title = "Species and Disease State")) +
   stat_ellipse(type = "norm")
@@ -59,6 +60,7 @@ adonis2(uf_dm ~ `Species` * `disease_stat`, data=samp_dat_wdiv)
 
 # Plotting PCoA plot
 beta_unifrac <- plot_ordination(ibd_rare, pcoa_uf, color = "V38") +
+  theme_bw() +
   scale_color_manual(values = allGroupsColors) +
   guides(color = guide_legend(title = "Species and Disease State")) +
   stat_ellipse(type = "norm")
@@ -81,6 +83,7 @@ adonis2(wuf_dm ~ `Species` * `disease_stat`, data=samp_dat_wdiv)
 
 # Plotting PCoA plot
 beta_w_unifrac <- plot_ordination(ibd_rare, pcoa_wuf, color = "V38") +
+  theme_bw() +
   scale_color_manual(values = allGroupsColors) +
   guides(color = guide_legend(title = "Species and Disease State")) +
   stat_ellipse(type = "norm")
@@ -103,6 +106,7 @@ adonis2(jacc_dm ~ `Species` * `disease_stat`, data=samp_dat_wdiv)
 
 # Plotting PCoA plot
 beta_jacc <- plot_ordination(ibd_rare, pcoa_jacc, color = "V38") +
+  theme_bw() +
   scale_color_manual(values = allGroupsColors) +
   guides(color = guide_legend(title = "Species and Disease State")) +
   stat_ellipse(type = "norm")
