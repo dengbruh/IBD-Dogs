@@ -363,77 +363,88 @@ hum_cd.corem <- unique(c(hum_cd.tax.unit$Taxa_level))
 # Dog H vs Dog IBD
 dogh_dogibd_list <- list("Healthy Dogs" = dog_h.corem, "IBD Dogs" = dog_ibd.corem)
 dogh_dogibd_venn <- ggvenn(dogh_dogibd_list,
-                           fill_color = c("#00C000FF", "#FF2000FF"),
-                           stroke_size = 0.5, set_name_size = 5)
+                           fill_color = c("#F9766D", "#03BF7D"),
+                           stroke_size = 0.5, set_name_size = 5,
+                           text_size = 7)
 ggsave("dogh_dogibd_venn.png", dogh_dogibd_venn)
 
 
 # Human H vs Human IBD
 humh_humibd_list <- list("Healthy Humans" = hum_h.corem, "IBD Humans" = hum_ibd.corem)
 humh_humibd_venn <- ggvenn(humh_humibd_list,
-                           fill_color = c("#00C000FF", "#FF2000FF"),
-                           stroke_size = 0.5, set_name_size = 5)
+                           fill_color = c("#A3A500", "#FF2000FF"),
+                           stroke_size = 0.5, set_name_size = 5,
+                           text_size = 7)
 ggsave("humh_humibd_venn.png", humh_humibd_venn)
 
 # Humam H vs Human UC vs Human CD
 humh_humuc_humcd_list <- list("Ulcerative Colitis Humans     " = hum_uc.corem, "     Crohn's Disease Humans" = hum_cd.corem, "Healthy Humans" = hum_h.corem)
 humh_humuc_humcd_venn <- ggvenn(humh_humuc_humcd_list,
-                                fill_color = c("#0073C2FF", "#EFC000FF", "#00C000FF"),
-                                stroke_size = 0.5, set_name_size = 5)
+                                fill_color = c("#E76BF3", "#00B0F6", "#A3A500"),
+                                stroke_size = 0.5, set_name_size = 5,
+                                text_size = 7)
 ggsave("humh_humuc_humcd_venn.png", humh_humuc_humcd_venn)
 
 # Human H vs Human UC
 humh_humuc_list <- list("Healthy Humans" = hum_h.corem, "Ulcerative Colitis Humans" = hum_uc.corem)
 humh_humuc_venn <- ggvenn(humh_humuc_list,
-                          fill_color = c("#00C000FF", "#0073C2FF"),
-                          stroke_size = 0.5, set_name_size = 5)
+                          fill_color = c("#A3A500", "#E76BF3"),
+                          stroke_size = 0.5, set_name_size = 5,
+                          text_size = 7)
 ggsave("humh_humuc_venn.png", humh_humuc_venn)
 
 # Human H vs Human CD
 humh_humcd_list <- list("Healthy Humans" = hum_h.corem, "Crohn's Disease Humans" = hum_cd.corem)
 humh_humcd_venn <- ggvenn(humh_humcd_list,
-                          fill_color = c("#00C000FF", "#EFC000FF"),
-                          stroke_size = 0.5, set_name_size = 5)
+                          fill_color = c("#A3A500", "#00B0F6"),
+                          stroke_size = 0.5, set_name_size = 5,
+                          text_size = 7)
 ggsave("humh_humcd_venn.png", humh_humcd_venn)
 
 # Human UC vs Human CD
 humuc_humcd_list <- list("Ulcerative Colitis Humans" = hum_uc.corem, "Crohn's Disease Humans" = hum_cd.corem)
 humuc_humcd_venn <- ggvenn(humuc_humcd_list,
-                           fill_color = c("#0073C2FF", "#EFC000FF"),
-                           stroke_size = 0.5, set_name_size = 5)
+                           fill_color = c("#E76BF3", "#00B0F6"),
+                           stroke_size = 0.5, set_name_size = 5,
+                           text_size = 7)
 ggsave("humuc_humcd_venn.png", humuc_humcd_venn)
 
 # Dog H  vs Human H
 dogh_humh_list <- list("Healthy Dogs" = dog_h.corem, "Healthy Humans" = hum_h.corem)
 dogh_humh_venn <- ggvenn(dogh_humh_list,
-                         fill_color = c("#00C000FF", "#00C000FF"),
-                         stroke_size = 0.5, set_name_size = 5)
+                         fill_color = c("#F9766D", "#A3A500"),
+                         stroke_size = 0.5, set_name_size = 5,
+                         text_size = 7)
 ggsave("dogh_humh_venn.png", dogh_humh_venn)
 
 # Dog IBD vs Human IBD
 dogibd_humibd_list <- list("IBD Dogs" = dog_ibd.corem, "IBD Humans" = hum_ibd.corem)
 dogibd_humibd_venn <- ggvenn(dogibd_humibd_list,
-                             fill_color = c("#FF2000FF", "#FF2000FF"),
-                             stroke_size = 0.5, set_name_size = 5)
+                             fill_color = c("#03BF7D", "#FF2000FF"),
+                             stroke_size = 0.5, set_name_size = 5,
+                             text_size = 7)
 ggsave("dogibd_humibd_venn.png", dogibd_humibd_venn)
 
 # Dog IBD vs Human UC vs Human CD
 dogibd_humuc_humcd_list <- list("Ulcerative Colitis Humans    " = hum_uc.corem, "    Crohn's Disease Humans" = hum_cd.corem, "IBD Dogs" = dog_ibd.corem)
 dogibd_humuc_humcd_venn <- ggvenn(dogibd_humuc_humcd_list,
-                                  fill_color = c("#0073C2FF", "#EFC000FF", "#FF2000FF"),
-                                  stroke_size = 0.5, set_name_size = 5)
+                                  fill_color = c("#E76BF3", "#00B0F6", "#03BF7D"),
+                                  stroke_size = 0.5, set_name_size = 5,
+                                  text_size = 7)
 ggsave("dogibd_humuc_humcd_venn.png", dogibd_humuc_humcd_venn)
 
 # Dog IBD vs Human UC
 dogibd_humuc_list <- list("IBD Dogs" = dog_ibd.corem, "Ulcerative Colitis Humans" = hum_uc.corem)
 dogibd_humuc_venn <- ggvenn(dogibd_humuc_list,
-                            fill_color = c("#FF2000FF", "#0073C2FF"),
-                            stroke_size = 0.5, set_name_size = 5)
+                            fill_color = c("#03BF7D", "#E76BF3"),
+                            stroke_size = 0.5, set_name_size = 5,
+                            text_size = 7)
 ggsave("dogibd_humuc_venn.png", dogibd_humuc_venn)
 
 # Dog IBD vs Human CD
 dogibd_humcd_list <- list("IBD Dogs" = dog_ibd.corem, "Crohn's Disease Humans" = hum_cd.corem)
 dogibd_humcd_venn <- ggvenn(dogibd_humcd_list,
-                            fill_color = c("#FF2000FF", "#EFC000FF"),
-                            stroke_size = 0.5, set_name_size = 5)
+                            fill_color = c("#03BF7D", "#00B0F6"),
+                            stroke_size = 0.5, set_name_size = 5,
+                            text_size = 7)
 ggsave("dogibd_humcd_venn.png", dogibd_humcd_venn)
