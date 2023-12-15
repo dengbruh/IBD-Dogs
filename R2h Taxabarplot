@@ -1,12 +1,8 @@
-#### 2023-11-28 Wrote code
-#### 2023-11-30 Updated x-axes labels
-
 library(phyloseq) 
 library(tidyverse)
 library(ggplot2)
 library(ape)
 library(vegan)
-
 
 load("ibd_final.RData")
 
@@ -86,11 +82,95 @@ taxabarplot_labels <- c("healthy" = "Healthy Dogs",
 
 taxabarplot <- ggplot(data = data_rel_filter, aes(legend,rel_abs, fill = Phylum)) +
   geom_col(color = "black") +
-  theme(axis.text = element_text(size = 10, face = "bold"),
-        legend.text =  element_text(size = 8, face = "bold"),
-        axis.text.x = element_text(angle = -45),
-        axis.title.x = element_text(margin = margin(t = 20))) +
+  theme_bw()+
+  theme(axis.text = element_text(size = 10),
+        legend.text =  element_text(size = 15),
+        axis.text.x = element_text(angle = -30, size = 15, hjust = 0),
+        axis.title.x = element_text(size = 20, margin = margin(t = 30), face = "bold"),
+        axis.title.y = element_text(size = 20, margin = margin(t = 30), face = "bold")) +
   labs(y = "Relative abundance", x = "Disease Severity") +
   scale_x_discrete(labels = taxabarplot_labels)
 
-ggsave("taxabarplot.png", plot = taxabarplot, height=8, width=15)
+ggsave("Figure 3A. Phylum Level.png", plot = taxabarplot, height=8, width=15)
+
+##### Code for plots looking at one phylum at a time
+
+#Generating relative abundance at the genus level
+
+#Define the disease states
+levels <- unique(grouped_taxa$legend)
+#Create a new empty dataframe to put bacteroidota data in.
+data_rel_genus = data.frame()
+
+#Run a loop to generate the relative abundance of each genus for low, medium, and high groups.
+for (i in levels){
+  
+  df = grouped_taxa %>%
+    filter(legend == i)
+  
+  df_sum = df %>%
+    group_by(legend, Genus) %>%
+    summarize(abs = sum(abundance))
+  
+  df_sum$abs = as.numeric(as.character(df_sum$abs))
+  count = sum(df_sum$abs)
+  df_sum$rel_abs = df_sum$abs/count*100
+  
+  data_rel_genus = rbind(data_rel_genus, df_sum)
+  
+}
+
+#Filter for only Bacteroidota 
+data_rel_bacteroidata = data_rel_genus %>%
+  filter(legend != "acute_hem_diarrhea") %>%
+  group_by(legend, Genus) %>%
+  summarise(mean_rel_abs = sum(rel_abs))%>% #Add relative abundances together for multiple species that have the same genus
+  filter(mean_rel_abs>= 1) %>% #Remove Genus that have a relative abundance less than 1%
+  filter(!is.na(Genus))
+
+custom_colours <- c("#cc46aa",
+                    "#62be4a",
+                    "#9652cc",
+                    "#a8b635",
+                    "#5a66da",
+                    "#c9a541",
+                    "#927fdd",
+                    "#4c8c35",
+                    "#d87cdc",
+                    "#4dc482",
+                    "#d64587",
+                    "#5aae89",
+                    "#da3a5b",
+                    "#43c4c4",
+                    "#ce4f2d",
+                    "#4884d1",
+                    "#d9842d",
+                    "#5a5da2",
+                    "#9fb26a",
+                    "#94439d",
+                    "#697329",
+                    "#a69cde",
+                    "#31784c",
+                    "#dd88b6",
+                    "#8f682d",
+                    "#53a4d6",
+                    "#a44643",
+                    "#98609e",
+                    "#d89264",
+                    "#9b476d",
+                    "#e07b7a") # get colour palette that can accommodate 31 colours
+
+taxabarplot_bacteroidata <- ggplot(data = data_rel_bacteroidata, aes(legend,mean_rel_abs,fill = Genus)) +
+  geom_col(color = "black") +
+  theme_bw() +
+  theme(axis.text = element_text(size = 10),
+        legend.text =  element_text(size = 15),
+        axis.text.x = element_text(angle = -30, size = 15, hjust = 0),
+        axis.title.x = element_text(size = 20, margin = margin(t = 30), face = "bold"),
+        axis.title.y = element_text(size = 20, margin = margin(t = 30), face = "bold")) +
+  labs(y = "Relative abundance", x = "Disease Severity") +
+  scale_x_discrete(labels = taxabarplot_labels) +
+  scale_fill_manual(values = custom_colours)
+  
+ggsave("Figure 3B. Bacteroidota Genus Level.png", plot = taxabarplot_bacteroidata, height=8, width=15)
+
