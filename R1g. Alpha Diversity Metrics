@@ -1,0 +1,90 @@
+#### Loading phyloseq, tidyverse, ape, picante, and ggsignif ####
+library(phyloseq)
+library(ape)
+library(tidyverse)
+library(picante)
+library(ggsignif)
+
+
+#### Load in RData ####
+load("ibd_rare.RData")
+load("ibd_final.RData")
+
+
+#### Creating new column in metadata to compile both species and disease state ####
+sample_data(ibd_rare)[[38]] = paste(sample_data(ibd_rare)[[15]],sample_data(ibd_rare)[[10]])
+
+
+#### Extracting information for statistical tests ####
+alphadiv <- estimate_richness(ibd_rare)
+samp_dat <- sample_data(ibd_rare)
+samp_dat_wdiv <- data.frame(samp_dat, alphadiv)
+
+##############################################################################
+#### Alpha diversity - Shannon ######
+
+# Running 2 way anova
+shannon_species_disease <- lm(Shannon ~ `V38`, data=samp_dat_wdiv)
+summary(aov(shannon_species_disease))
+TukeyHSD(aov(shannon_species_disease))
+
+# Creating the initial box plot #
+alpha_shannon <- samp_dat_wdiv %>%
+  mutate(V38 = fct_relevel(V38, 
+                            "Healthy Dog", "Healthy Human", "IBD Dog", 
+                            "Crohn's Disease Human", "Ulcerative Colitis Human")) %>%
+  ggplot(aes(x=`V38`, y=Shannon, fill = V38)) +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 14, angle = -30, hjust = 0)) +
+  theme(axis.text.y = element_text(size = 14)) +
+  geom_boxplot() +
+  geom_signif(comparisons = list(c("Healthy Dog","Healthy Human"),c("IBD Dog","Crohn's Disease Human"), c("IBD Dog", "Ulcerative Colitis Human")),
+              y_position = c(4, 3.5, 4),
+              textsize = 6,
+              annotations = c("****","*","****")) +
+  ylab("Shannon Diversity") +
+  xlab("Species and Disease State") +
+  theme(axis.title.x = element_text(size = 16, face = "bold")) +
+  theme(axis.title.y = element_text(size = 16, face = "bold"))
+
+alpha_shannon <- alpha_shannon + guides(fill=guide_legend(title="Species and Disease State"))
+
+# Save plot
+ggsave(filename = "alpha_shannon_new.png"
+       , alpha_shannon
+       , height=8, width=8)
+
+##############################################################################
+#### Alpha diversity - Observered ######
+# Running 2 way anova
+observed_species_disease <- lm(Observed ~ `V38`, data=samp_dat_wdiv)
+summary(aov(observed_species_disease))
+TukeyHSD(aov(observed_species_disease))
+
+# Creating the initial box plot #
+alpha_observed <- samp_dat_wdiv %>%
+  mutate(V38 = fct_relevel(V38, 
+                           "Healthy Dog", "Healthy Human", "IBD Dog", 
+                           "Crohn's Disease Human", "Ulcerative Colitis Human")) %>%
+  ggplot(aes(x=`V38`, y=Observed, fill = V38)) +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 14, angle = -30, hjust = 0)) +
+  theme(axis.text.y = element_text(size = 14)) +
+  geom_boxplot() +
+  geom_signif(comparisons = list(c("Healthy Dog","Healthy Human"),c("IBD Dog","Crohn's Disease Human"), c("IBD Dog", "Ulcerative Colitis Human")),
+              y_position = c(150, 180, 200),
+              textsize = 6,
+              annotations = c("****","****","****")) +
+  ylab("Richness") +
+  xlab("Species and Disease State") +
+  theme(axis.title.x = element_text(size = 16, face = "bold")) +
+  theme(axis.title.y = element_text(size = 16, face = "bold"))
+
+alpha_observed <- alpha_observed + guides(fill=guide_legend(title="Species and Disease State"))
+
+alpha_observed
+
+# Save plot
+ggsave(filename = "alpha_observed_new.png"
+       , alpha_observed
+       , height=8, width=8)

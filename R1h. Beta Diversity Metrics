@@ -1,0 +1,50 @@
+#### Loading phyloseq, tidyverse, ape, picante, and vegan ####
+library(phyloseq)
+library(ape)
+library(tidyverse)
+library(picante)
+library(vegan)
+
+#### Load in RData ####
+load("ibd_rare.RData")
+load("ibd_final.RData")
+
+# check which methods you can specify
+?distance
+
+#### Creating new column in metadata to compile both species and disease state ####
+sample_data(ibd_rare)[[38]] = paste(sample_data(ibd_rare)[[15]],sample_data(ibd_rare)[[10]])
+
+#### Extracting information for statistical tests ####
+alphadiv <- estimate_richness(ibd_rare)
+samp_dat <- sample_data(ibd_rare)
+samp_dat_wdiv <- data.frame(samp_dat, alphadiv)
+
+#### Coloring based on species and disease state"
+allGroupsColors <- c(
+  "#00B0F6", "#F8766D","#A3A500","#00BF7D",
+  "#E76BF3")
+  
+##############################################################################
+#### Beta-diversity - Bray ####
+# Calculating Bray
+
+bc_dm <- distance(ibd_rare, method="bray")
+pcoa_bc <- ordinate(ibd_rare, method="PCoA", distance=bc_dm)
+
+# Running permanova
+adonis2(bc_dm ~ `Species` * `disease_stat`, data=samp_dat_wdiv)
+
+# Plotting PCoA plot
+beta_bray <- plot_ordination(ibd_rare, pcoa_bc, color = "V38") +
+  theme_bw() +
+scale_color_manual(values = allGroupsColors) +
+  guides(color = guide_legend(title = "Species and Disease State")) +
+  stat_ellipse(type = "norm")
+
+beta_bray
+
+# Save Plot
+ggsave("beta_bray_new.png"
+       , beta_bray
+       , height=4, width=5)
